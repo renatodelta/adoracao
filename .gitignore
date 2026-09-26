@@ -1,0 +1,8 @@
+# Data directory contents (JSON storage files)
+data/*.json
+!data/.gitkeep
+
+# OS and Log files
+.DS_Store
+Thumbs.db
+*.log

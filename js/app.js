@@ -1,0 +1,402 @@
+// JS App for Quinta-feira de Adoração - Comunidade do Formoso
+
+document.addEventListener('DOMContentLoaded', () => {
+  let currentDate = getNextThursdayDateStr();
+  let scheduleData = null;
+  let selectedTimeSlot = null;
+
+  // DOM Elements
+  const dateInput = document.getElementById('adoracaoDate');
+  const slotsList = document.getElementById('slotsList');
+  const progressFill = document.getElementById('progressFill');
+  const statsCount = document.getElementById('statsCount');
+  const alertBanner = document.getElementById('alertBanner');
+  
+  // Modal Elements
+  const bookingModal = document.getElementById('bookingModal');
+  const modalSlotTime = document.getElementById('modalSlotTime');
+  const adorerNameInput = document.getElementById('adorerName');
+  const adorerPhoneInput = document.getElementById('adorerPhone');
+  const adorerIntentionInput = document.getElementById('adorerIntention');
+  const cancelModalBtn = document.getElementById('cancelModalBtn');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const bookingForm = document.getElementById('bookingForm');
+  
+  // Action Buttons
+  const shareWpBtn = document.getElementById('shareWpBtn');
+  const printBtn = document.getElementById('printBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // Printable Table Element
+  const printTableBody = document.getElementById('printTableBody');
+  const printDateLabel = document.getElementById('printDateLabel');
+
+  // Set default date input
+  dateInput.value = currentDate;
+
+  // Date Change Listener
+  dateInput.addEventListener('change', (e) => {
+    currentDate = e.target.value;
+    loadSchedule(currentDate);
+  });
+
+  // Load Schedule Data
+  async function loadSchedule(dateStr) {
+    slotsList.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-secondary);">Carregando horários...</div>';
+    
+    try {
+      const response = await fetch(`api.php?date=${dateStr}`);
+      if (response.ok) {
+        const json = await response.json();
+        scheduleData = json.data;
+      } else {
+        throw new Error('Fallback to local storage');
+      }
+    } catch (err) {
+      console.warn('API não disponível, utilizando armazenamento local:', err);
+      scheduleData = getLocalStorageData(dateStr);
+    }
+
+    renderUI();
+  }
+
+  // Render Schedule Grid & Printable View
+  function renderUI() {
+    if (!scheduleData || !scheduleData.slots) return;
+
+    slotsList.innerHTML = '';
+    printTableBody.innerHTML = '';
+    printDateLabel.textContent = formatDateBR(currentDate);
+
+    let filledCount = 0;
+    let totalSlots = 0;
+    let emptySlots = [];
+
+    scheduleData.slots.forEach(slot => {
+      const isClosing = slot.time === '19:00' || (slot.notes && slot.notes.toLowerCase().includes('encerramento'));
+      const adorers = slot.adorers || [];
+      const hasAdorers = adorers.length > 0;
+
+      if (!isClosing) {
+        totalSlots++;
+        if (hasAdorers) filledCount++;
+        else emptySlots.push(slot.time);
+      }
+
+      // Slot Card Element
+      const card = document.createElement('div');
+      card.className = 'slot-card';
+
+      let statusBadgeHtml = '';
+      if (isClosing) {
+        statusBadgeHtml = `<span class="slot-status-tag tag-closing">Encerramento</span>`;
+      } else if (adorers.length === 0) {
+        statusBadgeHtml = `<span class="slot-status-tag tag-warning">Vago</span>`;
+      } else if (adorers.length === 1) {
+        statusBadgeHtml = `<span class="slot-status-tag tag-occupied">1 Adorador</span>`;
+      } else {
+        statusBadgeHtml = `<span class="slot-status-tag tag-free">${adorers.length} Adoradores</span>`;
+      }
+
+      let adorersHtml = '';
+      if (hasAdorers) {
+        adorersHtml = `<div class="slot-adorers-list">` +
+          adorers.map((a, idx) => `
+            <span class="adorer-badge">
+              👤 ${escapeHtml(a.name)}
+              <button class="remove-btn" data-time="${slot.time}" data-index="${idx}" title="Remover adorador">&times;</button>
+            </span>
+          `).join('') +
+          `</div>`;
+      } else if (isClosing) {
+        adorersHtml = `<span style="color: var(--text-secondary); font-weight: 500;">Missa / Encerramento</span>`;
+      } else {
+        adorersHtml = `
+          <div class="slot-empty-msg">
+            <span>⚠️ Nenhum adorador inscrito ainda</span>
+          </div>`;
+      }
+
+      card.innerHTML = `
+        <div class="slot-time">
+          <span class="slot-time-text">${slot.time}</span>
+          ${statusBadgeHtml}
+        </div>
+        <div class="slot-info">
+          ${adorersHtml}
+        </div>
+        <div class="slot-actions">
+          ${!isClosing ? `
+            <button class="btn btn-gold btn-sm open-book-btn" data-time="${slot.time}">
+              ➕ Inscrever Horário
+            </button>
+          ` : ''}
+        </div>
+      `;
+
+      slotsList.appendChild(card);
+
+      // Printable Table Row (Google Sheet style)
+      const tr = document.createElement('tr');
+      const adorerNamesStr = adorers.map(a => a.name).join(' / ') || (isClosing ? 'Encerramento' : '-');
+      tr.innerHTML = `
+        <td style="font-weight: bold; font-family: var(--font-serif);">${slot.time}</td>
+        <td>${escapeHtml(adorerNamesStr)}</td>
+      `;
+      printTableBody.appendChild(tr);
+    });
+
+    // Update Stats
+    const percent = Math.round((filledCount / totalSlots) * 100) || 0;
+    progressFill.style.width = `${percent}%`;
+    statsCount.textContent = `${filledCount} de ${totalSlots} horários cobertos (${percent}%)`;
+
+    if (emptySlots.length > 0) {
+      alertBanner.style.display = 'block';
+      alertBanner.innerHTML = `⚠️ <strong>Atenção:</strong> Faltam adoradores nos horários: <strong>${emptySlots.join(', ')}</strong>. Jesus te espera!`;
+    } else {
+      alertBanner.style.display = 'none';
+    }
+
+    // Attach Event Listeners to remove buttons & book buttons
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const time = e.target.getAttribute('data-time');
+        const index = parseInt(e.target.getAttribute('data-index'), 10);
+        confirmRemoveAdorer(time, index);
+      });
+    });
+
+    document.querySelectorAll('.open-book-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const time = e.target.getAttribute('data-time');
+        openBookingModal(time);
+      });
+    });
+  }
+
+  // Open Booking Modal
+  function openBookingModal(time) {
+    selectedTimeSlot = time;
+    modalSlotTime.textContent = time;
+    adorerNameInput.value = '';
+    adorerPhoneInput.value = '';
+    adorerIntentionInput.value = '';
+    bookingModal.classList.add('active');
+    adorerNameInput.focus();
+  }
+
+  // Close Modal
+  function closeModal() {
+    bookingModal.classList.remove('active');
+    selectedTimeSlot = null;
+  }
+
+  closeModalBtn.addEventListener('click', closeModal);
+  cancelModalBtn.addEventListener('click', closeModal);
+
+  // Form Submit Handler
+  bookingForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = adorerNameInput.value.trim();
+    const phone = adorerPhoneInput.value.trim();
+    const intention = adorerIntentionInput.value.trim();
+
+    if (!name || !selectedTimeSlot) return;
+
+    try {
+      const response = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'book',
+          date: currentDate,
+          time: selectedTimeSlot,
+          name: name,
+          phone: phone,
+          intention: intention
+        })
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        scheduleData = json.data;
+      } else {
+        throw new Error('Fallback local save');
+      }
+    } catch (err) {
+      saveLocalStorageBook(currentDate, selectedTimeSlot, name, phone, intention);
+    }
+
+    closeModal();
+    renderUI();
+  });
+
+  // Remove Adorer
+  async function confirmRemoveAdorer(time, index) {
+    if (!confirm(`Deseja remover o adorador deste horário (${time})?`)) return;
+
+    try {
+      const response = await fetch('api.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'remove',
+          date: currentDate,
+          time: time,
+          index: index
+        })
+      });
+
+      if (response.ok) {
+        const json = await response.json();
+        scheduleData = json.data;
+      } else {
+        throw new Error('Fallback local remove');
+      }
+    } catch (err) {
+      removeLocalStorageAdorer(currentDate, time, index);
+    }
+
+    renderUI();
+  }
+
+  // Share via WhatsApp
+  shareWpBtn.addEventListener('click', () => {
+    if (!scheduleData || !scheduleData.slots) return;
+
+    let emptyHours = [];
+    let filledSummary = [];
+
+    scheduleData.slots.forEach(slot => {
+      const isClosing = slot.time === '19:00';
+      if (isClosing) return;
+
+      const adorers = (slot.adorers || []).map(a => a.name).join(', ');
+      if (!adorers) {
+        emptyHours.push(slot.time);
+      } else {
+        filledSummary.push(`• *${slot.time}*: ${adorers}`);
+      }
+    });
+
+    let msg = `✨ *QUINTA-FEIRA DE ADORAÇÃO - COMUNIDADE DO FORMOSO* ✨\n`;
+    msg += `📅 *Data:* ${formatDateBR(currentDate)}\n\n`;
+
+    if (emptyHours.length > 0) {
+      msg += `🚨 *HORÁRIOS QUE PRECISADAM DE ADORADOR:* \n`;
+      msg += emptyHours.map(h => ` 🕒 ${h} - (VAGO)`).join('\n') + `\n\n`;
+      msg += ` Inscreva-se para não deixar Jesus sozinho no altar!\n\n`;
+    } else {
+      msg += `🙌 *Todos os horários estão preenchidos! Louvado seja Deus!*\n\n`;
+    }
+
+    msg += `📋 *Escala Atual:* \n` + filledSummary.join('\n') + `\n\n`;
+    msg += `👉 Marque seu horário e acompanhe a escala completa acessando a página da comunidade!`;
+
+    const encodedMsg = encodeURIComponent(msg);
+    window.open(`https://api.whatsapp.com/send?text=${encodedMsg}`, '_blank');
+  });
+
+  // Print Sheet
+  printBtn.addEventListener('click', () => {
+    window.print();
+  });
+
+  // Reset to default scale
+  resetBtn.addEventListener('click', async () => {
+    if (confirm("Tem certeza que deseja restaurar os horários padrão desta Quinta-feira?")) {
+      try {
+        const response = await fetch('api.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'reset_day', date: currentDate })
+        });
+        if (response.ok) {
+          const json = await response.json();
+          scheduleData = json.data;
+        }
+      } catch (err) {
+        localStorage.removeItem(`adoracao_${currentDate}`);
+        scheduleData = getLocalStorageData(currentDate);
+      }
+      renderUI();
+    }
+  });
+
+  // Helpers
+  function getNextThursdayDateStr() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 is Sun, 4 is Thu
+    const distanceToThu = (4 - dayOfWeek + 7) % 7;
+    const nextThu = new Date(today);
+    nextThu.setDate(today.getDate() + (distanceToThu === 0 ? 0 : distanceToThu));
+    return nextThu.toISOString().split('T')[0];
+  }
+
+  function formatDateBR(dateStr) {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    })[m]);
+  }
+
+  // Local Storage Fallback Functions
+  function getLocalStorageData(dateStr) {
+    const key = `adoracao_${dateStr}`;
+    const stored = localStorage.getItem(key);
+    if (stored) return JSON.parse(stored);
+
+    const defaultData = {
+      date: dateStr,
+      slots: [
+        { time: "05:00", adorers: [{ name: "Rosário" }] },
+        { time: "06:00", adorers: [{ name: "Rosário" }] },
+        { time: "07:00", adorers: [{ name: "Ana Maria Campos" }] },
+        { time: "08:00", adorers: [{ name: "Paulinho" }] },
+        { time: "09:00", adorers: [{ name: "Dita" }] },
+        { time: "10:00", adorers: [{ name: "Marinéia" }] },
+        { time: "11:00", adorers: [{ name: "Reginaldo" }] },
+        { time: "12:00", adorers: [{ name: "Suely" }] },
+        { time: "13:00", adorers: [{ name: "Irene" }] },
+        { time: "14:00", adorers: [{ name: "Irene" }] },
+        { time: "15:00", adorers: [{ name: "Marcia Ramos" }] },
+        { time: "16:00", adorers: [{ name: "Ana Maria Maximiano" }] },
+        { time: "17:00", adorers: [{ name: "Ednéia Maria" }] },
+        { time: "18:00", adorers: [{ name: "Sandra / Flávio" }] },
+        { time: "19:00", adorers: [{ name: "Encerramento" }], notes: "Encerramento" }
+      ]
+    };
+    localStorage.setItem(key, JSON.stringify(defaultData));
+    return defaultData;
+  }
+
+  function saveLocalStorageBook(dateStr, time, name, phone, intention) {
+    const data = getLocalStorageData(dateStr);
+    const slot = data.slots.find(s => s.time === time);
+    if (slot) {
+      if (!slot.adorers) slot.adorers = [];
+      slot.adorers.push({ name, phone, intention });
+      localStorage.setItem(`adoracao_${dateStr}`, JSON.stringify(data));
+      scheduleData = data;
+    }
+  }
+
+  function removeLocalStorageAdorer(dateStr, time, index) {
+    const data = getLocalStorageData(dateStr);
+    const slot = data.slots.find(s => s.time === time);
+    if (slot && slot.adorers && slot.adorers[index]) {
+      slot.adorers.splice(index, 1);
+      localStorage.setItem(`adoracao_${dateStr}`, JSON.stringify(data));
+      scheduleData = data;
+    }
+  }
+
+  // Initial Load
+  loadSchedule(currentDate);
+});
