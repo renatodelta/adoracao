@@ -3,31 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Quinta-feira de Adoração - Comunidade do Formoso</title>
-  <meta name="description" content="Escala de Horários de Adoração ao Santíssimo Sacramento - Comunidade do Formoso">
-  <meta name="theme-color" content="#5c131d">
+  <title>Quinta-feira de Adoração - Capela de São José (Formoso)</title>
+  <meta name="description" content="Escala de Horários de Adoração ao Santíssimo Sacramento - Capela de São José (Comunidade do Formoso)">
+  <meta name="theme-color" content="#4a0a13">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Adoração Formoso">
   <link rel="apple-touch-icon" href="assets/custodia.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="assets/custodia.jpg" type="image/jpeg">
 </head>
 <body>
 
-  <!-- Header Banner -->
+  <!-- Header Banner with Sacred Monstrance & Arabesques -->
   <header class="header-banner">
+    <div class="divine-rays"></div>
     <div class="header-content">
-      <img src="assets/custodia.jpg" alt="Santíssimo Sacramento" class="monstrance-img">
-      <h1 class="header-title">Quinta-feira de Adoração</h1>
-      <p class="header-subtitle">"Vinde e Adoremos!" — Reserve seu momento com o Santíssimo Sacramento</p>
-      <div class="community-badge">
-        <span>📍 Comunidade do Formoso</span>
+      
+      <!-- Top Flourish -->
+      <div class="flourish-divider">
+        <svg viewBox="0 0 500 60" class="svg-flourish">
+          <path d="M 50,30 Q 150,5 250,30 Q 350,55 450,30 M 180,30 C 200,10 230,10 250,30 C 270,50 300,50 320,30" stroke="url(#goldGrad)" stroke-width="2" fill="none"/>
+          <circle cx="250" cy="30" r="5" fill="#d4af37"/>
+          <circle cx="210" cy="30" r="3" fill="#e5be48"/>
+          <circle cx="290" cy="30" r="3" fill="#e5be48"/>
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#b38728"/>
+              <stop offset="50%" stop-color="#fbf5b7"/>
+              <stop offset="100%" stop-color="#b38728"/>
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
+
+      <div class="monstrance-container">
+        <div class="monstrance-halo"></div>
+        <img src="assets/custodia.jpg" alt="Santíssimo Sacramento - Custódia de Adoração" class="monstrance-img">
+      </div>
+
+      <h1 class="header-title">Quinta-feira de Adoração</h1>
+      <div class="header-subtitle-wrapper">
+        <span class="vinde-adoremos">VINDE E ADOREMOS</span>
+      </div>
+
+      <!-- Bottom Flourish -->
+      <div class="flourish-divider bottom-flourish">
+        <svg viewBox="0 0 500 40" class="svg-flourish">
+          <path d="M 100,20 Q 250,35 400,20 M 170,20 Q 250,5 330,20" stroke="url(#goldGrad)" stroke-width="1.5" fill="none"/>
+          <polygon points="250,15 255,25 245,25" fill="#d4af37"/>
+        </svg>
+      </div>
+
+      <!-- Schedule Pill Badge from Photo -->
+      <div class="schedule-pill-badge">
+        <div class="pill-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M12 2L2 9h3v11h14V9h3L12 2zm0 2.8L17.5 9H6.5L12 4.8zM11 11h2v7h-2v-7z"/>
+          </svg>
+        </div>
+        <div class="pill-text">
+          <span class="pill-label">HORÁRIO DE ADORAÇÃO</span>
+          <span class="pill-time">DAS 05H ÀS 19H</span>
+        </div>
+      </div>
+
     </div>
   </header>
 
   <main class="container">
+
+    <!-- Saint Quote Banner (São Boaventura Inspired by Photo) -->
+    <section class="saint-quote-card">
+      <div class="quote-icon">“</div>
+      <div class="quote-content">
+        <p class="quote-text">Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.</p>
+        <span class="quote-author">— São Boaventura</span>
+      </div>
+    </section>
 
     <!-- Controls & Actions -->
     <section class="control-bar">
@@ -37,32 +93,37 @@
       </div>
 
       <div class="action-buttons">
-        <button id="shareWpBtn" class="btn btn-whatsapp" title="Compartilhar lista de vagas no WhatsApp">
+        <button id="shareWpBtn" class="btn btn-whatsapp" title="Compartilhar lista no WhatsApp">
           📱 Enviar no WhatsApp
         </button>
-        <button id="printBtn" class="btn btn-outline" title="Imprimir em formato de tabela igual ao Google Sheets">
+        <button id="printBtn" class="btn btn-outline" title="Imprimir escala da Adoração">
           🖨️ Imprimir / PDF
         </button>
-        <button id="resetBtn" class="btn btn-outline" style="font-size: 12px;" title="Restaurar horários padrão">
+        <button id="resetBtn" class="btn btn-outline btn-reset" title="Restaurar horários padrão">
           🔄 Restaurar
         </button>
       </div>
     </section>
 
-    <!-- Stats & Progress -->
+    <!-- Stats & Coverage Progress -->
     <section class="stats-card">
       <div class="stats-header">
-        <span class="stats-title">Cobertura de Adoradores</span>
+        <span class="stats-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="#d4af37" style="vertical-align: sub; margin-right: 4px;">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          Cobertura de Adoradores
+        </span>
         <span class="stats-count" id="statsCount">Carregando...</span>
       </div>
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" id="progressFill"></div>
       </div>
-      <div class="stats-subtext">Garantindo que Jesus esteja acompanhado durante toda a quinta-feira.</div>
+      <div class="stats-subtext">Garantindo que Nosso Senhor Jesus Cristo permaneça acompanhado e adorado no altar.</div>
     </section>
 
     <!-- Alert Banner for Missing Hours -->
-    <div id="alertBanner" class="stats-card" style="display: none; border-left-color: #ef4444; background: #fff5f5; color: #991b1b; margin-bottom: 20px;">
+    <div id="alertBanner" class="alert-divine-card" style="display: none;">
     </div>
 
     <!-- Time Slots List -->
@@ -72,17 +133,25 @@
 
   </main>
 
+  <!-- Divine Footer -->
+  <footer class="divine-footer">
+    <div class="footer-content">
+      <p class="chapel-name">Capela de São José — Formoso</p>
+      <p class="footer-blessing">"Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!"</p>
+    </div>
+  </footer>
+
   <!-- Modal Booking Dialog -->
   <div class="modal-overlay" id="bookingModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>Inscrever Horário de Adoração</h3>
+        <h3>Inscrever-se para a Adoração</h3>
         <button class="close-btn" id="closeModalBtn">&times;</button>
       </div>
       <form id="bookingForm">
         <div class="modal-body">
-          <p style="margin-bottom: 16px; color: var(--text-secondary);">
-            Você está se inscrevendo para o horário das <strong id="modalSlotTime" style="color: var(--primary-burgundy); font-size: 18px;"></strong>.
+          <p class="modal-intro">
+            Você está se inscrevendo para adorar a Jesus às <strong id="modalSlotTime"></strong>.
           </p>
 
           <div class="form-group">
@@ -93,38 +162,36 @@
           <div class="form-group">
             <label for="adorerPhone">Telefone / WhatsApp (Opcional)</label>
             <input type="tel" id="adorerPhone" placeholder="Ex: (35) 99999-9999" autocomplete="tel">
-            <div class="form-help">Para lembretes do coordenador da comunidade.</div>
+            <div class="form-help">Para apoio e lembretes da coordenação da Capela.</div>
           </div>
 
           <div class="form-group">
             <label for="adorerIntention">Intenção de Oração (Opcional)</label>
-            <textarea id="adorerIntention" rows="2" placeholder="Ex: Pelas famílias, pelos doentes da comunidade..."></textarea>
+            <textarea id="adorerIntention" rows="2" placeholder="Ex: Pelas famílias, pelos doentes da nossa comunidade..."></textarea>
           </div>
         </div>
-        <div class="modal-footer" style="padding: 0 24px 24px;">
+        <div class="modal-footer">
           <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
-          <button type="submit" class="btn btn-gold">Confirmar Agendamento</button>
+          <button type="submit" class="btn btn-gold"> Confirmar Agendamento</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Printable Sheet View (Google Sheet Layout Replica for Printing) -->
+  <!-- Printable Sheet View -->
   <div class="printable-sheet" id="printableSheet">
-    <div style="display: flex; align-items: center; justify-content: space-around; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px;">
-      <div style="text-align: center;">
-        <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img" style="max-height: 100px;">
-        <h2 style="font-family: var(--font-serif); font-size: 18px; text-transform: uppercase;">Quinta-feira de Adoração</h2>
-        <p style="font-style: italic; font-size: 13px;">Vinde e Adoremos - Comunidade do Formoso</p>
-        <p style="font-weight: bold; margin-top: 5px;">Data: <span id="printDateLabel"></span></p>
-      </div>
+    <div style="text-align: center; border-bottom: 2px solid #5c131d; padding-bottom: 12px; margin-bottom: 15px;">
+      <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img" style="max-height: 90px; border-radius: 50%;">
+      <h2 style="font-family: 'Cinzel', serif; font-size: 22px; color: #5c131d; margin-top: 6px; text-transform: uppercase;">Quinta-feira de Adoração</h2>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #7a1c29;">Vinde e Adoremos — Capela de São José (Formoso)</p>
+      <p style="font-weight: bold; margin-top: 6px; font-size: 14px;">Data: <span id="printDateLabel"></span></p>
     </div>
 
     <table class="sheet-table">
       <thead>
         <tr>
-          <th style="width: 30%;">Horário</th>
-          <th style="width: 70%;">Adorador</th>
+          <th style="width: 25%;">Horário</th>
+          <th style="width: 75%;">Adoradores Inscritos</th>
         </tr>
       </thead>
       <tbody id="printTableBody">

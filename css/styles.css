@@ -1,32 +1,56 @@
-/* Design System - Quinta-feira de Adoração - Comunidade do Formoso */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+/* ==========================================================================
+   Design System — Quinta-feira de Adoração (Capela de São José - Formoso)
+   Inspirado no Ostensório e Arte Sacra Católica
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-burgundy: #5c131d;
-  --burgundy-dark: #3b0910;
-  --burgundy-light: #7e1d2b;
+  /* Sacred Color Palette */
+  --sacred-burgundy-dark: #37060c;
+  --sacred-burgundy: #5c131d;
+  --sacred-burgundy-medium: #7e1d2b;
+  --sacred-crimson: #9e2333;
+  
+  /* Divine Gold Tokens */
+  --gold-dark: #a17724;
   --gold-primary: #d4af37;
   --gold-hover: #e5be48;
-  --gold-light: #fef5db;
+  --gold-bright: #fbf5b7;
+  --gold-amber: #8c5222;
+  --gold-light-bg: #fdfaf2;
   --gold-border: #e2c266;
-  --sacred-cream: #fbf8f3;
+  
+  /* Backgrounds & Text */
+  --sacred-parchment: #faf6f0;
   --card-bg: #ffffff;
-  --text-primary: #2c1a1d;
-  --text-secondary: #635255;
-  --status-free: #10b981;
+  --text-primary: #2b181b;
+  --text-secondary: #5e4c4f;
+  --text-muted: #8c7679;
+  
+  /* Status Colors */
+  --status-free: #059669;
   --status-free-bg: #ecfdf5;
-  --status-occupied: #3b82f6;
+  --status-occupied: #2563eb;
   --status-occupied-bg: #eff6ff;
-  --status-full: #8b5cf6;
-  --status-warning: #f59e0b;
-  --status-warning-bg: #fffbebfb;
-  --shadow-sm: 0 2px 8px rgba(92, 19, 29, 0.06);
-  --shadow-md: 0 6px 20px rgba(92, 19, 29, 0.12);
-  --shadow-lg: 0 12px 32px rgba(92, 19, 29, 0.18);
+  --status-warning: #dc2626;
+  --status-warning-bg: #fef2f2;
+  --status-closing: #4b5563;
+  
+  /* Radii & Shadows */
   --radius-sm: 8px;
   --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-lg: 22px;
+  --radius-pill: 50px;
+  
+  --shadow-sm: 0 4px 12px rgba(60, 10, 15, 0.06);
+  --shadow-md: 0 8px 24px rgba(60, 10, 15, 0.12);
+  --shadow-lg: 0 16px 40px rgba(60, 10, 15, 0.2);
+  --shadow-gold: 0 0 25px rgba(212, 175, 55, 0.4);
+  
+  /* Typography */
   --font-serif: 'Cinzel', serif;
+  --font-quote: 'Cormorant Garamond', serif;
   --font-sans: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -38,14 +62,14 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--sacred-cream);
+  background-color: var(--sacred-parchment);
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.6;
   min-height: 100vh;
-  padding-bottom: 60px;
+  position: relative;
 }
 
-/* Background Sacred Motif */
+/* Subtle Sacred Background Pattern */
 body::before {
   content: "";
   position: fixed;
@@ -54,8 +78,9 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 50% -20%, rgba(212, 175, 55, 0.15), transparent 70%),
-    radial-gradient(circle at 10% 90%, rgba(92, 19, 29, 0.05), transparent 50%);
+    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.18), transparent 70%),
+    radial-gradient(circle at 10% 90%, rgba(92, 19, 29, 0.08), transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(140, 82, 34, 0.06), transparent 50%);
   pointer-events: none;
   z-index: -1;
 }
@@ -63,35 +88,53 @@ body::before {
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 16px 40px;
 }
 
-/* Header Section */
+/* ==========================================================================
+   Header Banner (Sacred Monstrance & Divine Gold Artwork)
+   ========================================================================== */
+
 .header-banner {
-  background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--primary-burgundy) 60%, #4a0d16 100%);
+  background: linear-gradient(160deg, var(--sacred-burgundy-dark) 0%, var(--sacred-burgundy) 50%, #470b13 100%);
   color: #ffffff;
-  padding: 32px 20px 24px;
+  padding: 40px 20px 36px;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
   text-align: center;
-  border-bottom: 3px solid var(--gold-primary);
+  border-bottom: 4px solid var(--gold-primary);
 }
 
-.header-banner::after {
-  content: "";
+/* Divine Rays background behind header */
+.divine-rays {
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
-  animation: rotateLight 30s linear infinite;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(212, 175, 55, 0.08) 15deg,
+    transparent 30deg,
+    rgba(212, 175, 55, 0.08) 45deg,
+    transparent 60deg,
+    rgba(212, 175, 55, 0.08) 75deg,
+    transparent 90deg,
+    rgba(212, 175, 55, 0.08) 105deg,
+    transparent 120deg,
+    rgba(212, 175, 55, 0.08) 135deg,
+    transparent 150deg,
+    rgba(212, 175, 55, 0.08) 165deg,
+    transparent 180deg
+  );
+  animation: rotateRays 90s linear infinite;
   pointer-events: none;
 }
 
-@keyframes rotateLight {
+@keyframes rotateRays {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
@@ -104,66 +147,212 @@ body::before {
   align-items: center;
 }
 
-.monstrance-img {
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid var(--gold-primary);
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
-  margin-bottom: 14px;
-  transition: transform 0.3s ease;
-}
-
-.monstrance-img:hover {
-  transform: scale(1.05);
-}
-
-.header-title {
-  font-family: var(--font-serif);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--gold-primary);
-  text-transform: uppercase;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  margin-bottom: 4px;
-}
-
-.header-subtitle {
-  font-size: 15px;
+/* SVG Flourishes */
+.flourish-divider {
+  width: 100%;
+  max-width: 380px;
+  height: 35px;
+  margin: 0 auto;
   opacity: 0.9;
-  font-weight: 500;
-  max-width: 500px;
+}
+
+.flourish-divider.bottom-flourish {
+  height: 25px;
+  margin-top: 4px;
   margin-bottom: 16px;
 }
 
-.community-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(212, 175, 55, 0.2);
-  border: 1px solid var(--gold-primary);
-  color: #fff;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+.svg-flourish {
+  width: 100%;
+  height: 100%;
 }
 
-/* Control Bar (Date & Actions) */
+/* Monstrance / Ostensório Image Halo */
+.monstrance-container {
+  position: relative;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.monstrance-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 245, 183, 0.6) 0%, rgba(212, 175, 55, 0.3) 50%, transparent 75%);
+  animation: pulseHalo 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes pulseHalo {
+  0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+.monstrance-img {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--gold-primary);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 10px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.monstrance-img:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 40px rgba(251, 245, 183, 0.8), 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+/* Header Titles inspired by Photo */
+.header-title {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 0%, #fef5db 40%, #e2c266 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+.header-subtitle-wrapper {
+  margin-bottom: 4px;
+}
+
+.vinde-adoremos {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--gold-bright);
+  text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+/* Schedule Pill Badge matching Photo */
+.schedule-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #8c5222 0%, #6e3e18 100%);
+  border: 2px solid var(--gold-primary);
+  padding: 8px 24px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  margin-top: 10px;
+}
+
+.pill-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(212, 175, 55, 0.25);
+  border: 1px solid var(--gold-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-bright);
+  flex-shrink: 0;
+}
+
+.pill-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.pill-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+}
+
+.pill-time {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Saint Quote Card (São Boaventura inspired by Photo)
+   ========================================================================== */
+
+.saint-quote-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fdfaf5 100%);
+  border: 1px solid var(--gold-border);
+  border-left: 5px solid var(--sacred-burgundy);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin: -24px auto 20px;
+  position: relative;
+  z-index: 10;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.quote-icon {
+  font-family: var(--font-quote);
+  font-size: 60px;
+  line-height: 0.7;
+  color: var(--gold-primary);
+  opacity: 0.6;
+  user-select: none;
+}
+
+.quote-content {
+  flex: 1;
+}
+
+.quote-text {
+  font-family: var(--font-quote);
+  font-size: 19px;
+  font-style: italic;
+  color: var(--sacred-burgundy-dark);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.quote-author {
+  display: block;
+  text-align: right;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Control Bar (Date & Action Buttons)
+   ========================================================================== */
+
 .control-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   background: var(--card-bg);
-  padding: 16px 20px;
+  padding: 16px 22px;
   border-radius: var(--radius-md);
-  margin: -20px auto 20px;
-  position: relative;
-  z-index: 10;
+  margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(212, 175, 55, 0.3);
 }
@@ -172,26 +361,33 @@ body::before {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--sacred-burgundy);
 }
 
 .date-selector input[type="date"] {
-  padding: 8px 12px;
-  border: 1px solid var(--gold-border);
+  padding: 9px 14px;
+  border: 1.5px solid var(--gold-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
   font-size: 14px;
-  color: var(--primary-burgundy);
-  background-color: var(--gold-light);
-  font-weight: 600;
+  color: var(--sacred-burgundy-dark);
+  background-color: var(--gold-light-bg);
+  font-weight: 700;
   cursor: pointer;
   outline: none;
+  transition: all 0.2s ease;
+}
+
+.date-selector input[type="date"]:focus {
+  border-color: var(--sacred-burgundy);
+  box-shadow: 0 0 0 3px rgba(92, 19, 29, 0.15);
 }
 
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -200,138 +396,171 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 8px;
+  padding: 10px 18px;
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
-}
-
-.btn-primary {
-  background-color: var(--primary-burgundy);
-  color: #ffffff;
-}
-
-.btn-primary:hover {
-  background-color: var(--burgundy-light);
-  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 .btn-gold {
-  background-color: var(--gold-primary);
-  color: var(--burgundy-dark);
+  background: linear-gradient(135deg, var(--gold-primary) 0%, #c49d28 100%);
+  color: var(--sacred-burgundy-dark);
+  border: 1px solid var(--gold-border);
+  box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
 }
 
 .btn-gold:hover {
-  background-color: var(--gold-hover);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, var(--gold-hover) 0%, var(--gold-primary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
 }
 
 .btn-whatsapp {
-  background-color: #25d366;
+  background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
   color: #ffffff;
+  box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
 }
 
 .btn-whatsapp:hover {
-  background-color: #20ba5a;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #20ba5a 0%, #199443 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
 }
 
 .btn-outline {
   background-color: transparent;
-  border: 1px solid var(--gold-border);
-  color: var(--primary-burgundy);
+  border: 1.5px solid var(--gold-border);
+  color: var(--sacred-burgundy);
 }
 
 .btn-outline:hover {
-  background-color: var(--gold-light);
+  background-color: var(--gold-light-bg);
+  border-color: var(--gold-primary);
+  transform: translateY(-1px);
+}
+
+.btn-reset {
+  font-size: 12px;
+  padding: 8px 12px;
+  opacity: 0.8;
 }
 
 .btn-sm {
-  padding: 4px 10px;
-  font-size: 12px;
+  padding: 8px 14px;
+  font-size: 13px;
 }
 
-/* Progress Stats Card */
+/* ==========================================================================
+   Coverage Stats Card
+   ========================================================================== */
+
 .stats-card {
   background: var(--card-bg);
   border-radius: var(--radius-md);
-  padding: 18px 20px;
-  margin-bottom: 20px;
+  padding: 20px 24px;
+  margin-bottom: 22px;
   box-shadow: var(--shadow-sm);
-  border-left: 4px solid var(--gold-primary);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-left: 5px solid var(--gold-primary);
 }
 
 .stats-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .stats-title {
   font-family: var(--font-serif);
-  font-size: 16px;
-  color: var(--primary-burgundy);
+  font-size: 17px;
+  color: var(--sacred-burgundy-dark);
   font-weight: 700;
+  display: flex;
+  align-items: center;
 }
 
 .stats-count {
   font-size: 14px;
   font-weight: 700;
-  color: var(--primary-burgundy);
+  color: var(--sacred-burgundy);
+  background: var(--gold-light-bg);
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--gold-border);
 }
 
 .progress-bar-bg {
   width: 100%;
-  height: 10px;
-  background-color: #f1e9db;
-  border-radius: 5px;
+  height: 12px;
+  background-color: #f2eae0;
+  border-radius: 6px;
   overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold-primary), #10b981);
+  background: linear-gradient(90deg, var(--sacred-burgundy), var(--gold-primary), var(--status-free));
   width: 0%;
-  transition: width 0.5s ease;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stats-subtext {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
-  margin-top: 6px;
+  margin-top: 8px;
+  font-style: italic;
 }
 
-/* Schedule Slots List / Grid */
+.alert-divine-card {
+  background: #fff5f5;
+  border: 1px solid #fca5a5;
+  border-left: 5px solid #dc2626;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  color: #991b1b;
+  margin-bottom: 22px;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   Schedule Time Slots (Dynamic Cards)
+   ========================================================================== */
+
 .slots-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .slot-card {
   background: var(--card-bg);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
+  padding: 18px 22px;
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  gap: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  transition: all 0.25s ease;
   position: relative;
 }
 
 .slot-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--gold-border);
+  border-color: var(--gold-primary);
+  transform: translateY(-2px);
 }
 
 .slot-time {
@@ -339,18 +568,18 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 80px;
-  padding: 8px 12px;
-  background: var(--sacred-cream);
+  min-width: 95px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, var(--sacred-parchment) 0%, #f5efe6 100%);
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1.5px solid var(--gold-border);
 }
 
 .slot-time-text {
   font-family: var(--font-serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--primary-burgundy);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--sacred-burgundy-dark);
 }
 
 .slot-info {
@@ -360,41 +589,48 @@ body::before {
 .slot-adorers-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   align-items: center;
 }
 
 .adorer-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #f4efe6;
+  gap: 8px;
+  background: var(--gold-light-bg);
   border: 1px solid var(--gold-border);
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--primary-burgundy);
+  color: var(--sacred-burgundy-dark);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .adorer-badge .remove-btn {
   background: none;
   border: none;
-  color: #ef4444;
+  color: #dc2626;
   cursor: pointer;
   font-weight: bold;
-  font-size: 14px;
-  margin-left: 4px;
+  font-size: 16px;
+  margin-left: 2px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: background 0.2s;
 }
 
 .adorer-badge .remove-btn:hover {
-  color: #b91c1c;
+  background: rgba(220, 38, 38, 0.1);
+  color: #991b1b;
 }
 
 .slot-empty-msg {
-  color: #ef4444;
+  color: #dc2626;
   font-weight: 600;
   font-size: 14px;
   display: flex;
@@ -403,47 +639,81 @@ body::before {
 }
 
 .slot-status-tag {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-top: 4px;
 }
 
 .tag-free {
   background-color: var(--status-free-bg);
   color: var(--status-free);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(5, 150, 105, 0.3);
 }
 
 .tag-occupied {
   background-color: var(--status-occupied-bg);
   color: var(--status-occupied);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(37, 99, 235, 0.3);
 }
 
 .tag-warning {
-  background-color: #fef2f2;
-  color: #dc2626;
+  background-color: var(--status-warning-bg);
+  color: var(--status-warning);
   border: 1px solid rgba(220, 38, 38, 0.3);
 }
 
 .tag-closing {
   background-color: #f3f4f6;
-  color: #4b5563;
+  color: var(--status-closing);
   border: 1px solid #d1d5db;
 }
 
-/* Modal Overlay */
+/* ==========================================================================
+   Divine Footer Banner (Capela de São José - Formoso)
+   ========================================================================== */
+
+.divine-footer {
+  background: linear-gradient(180deg, var(--sacred-burgundy) 0%, var(--sacred-burgundy-dark) 100%);
+  color: #ffffff;
+  text-align: center;
+  padding: 24px 20px;
+  margin-top: 40px;
+  border-top: 3px solid var(--gold-primary);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+
+.chapel-name {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.footer-blessing {
+  font-family: var(--font-quote);
+  font-size: 16px;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Modal Dialog
+   ========================================================================== */
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(44, 26, 29, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(35, 6, 12, 0.7);
+  backdrop-filter: blur(5px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -476,115 +746,129 @@ body::before {
 }
 
 .modal-header {
-  background: var(--primary-burgundy);
+  background: linear-gradient(135deg, var(--sacred-burgundy-dark) 0%, var(--sacred-burgundy) 100%);
   color: #ffffff;
-  padding: 18px 24px;
+  padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid var(--gold-primary);
 }
 
 .modal-header h3 {
   font-family: var(--font-serif);
-  color: var(--gold-primary);
-  font-size: 18px;
+  color: var(--gold-bright);
+  font-size: 20px;
+  letter-spacing: 0.5px;
 }
 
 .close-btn {
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
+  line-height: 1;
 }
 
 .modal-body {
   padding: 24px;
 }
 
+.modal-intro {
+  margin-bottom: 20px;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.modal-intro strong {
+  color: var(--sacred-burgundy);
+  font-family: var(--font-serif);
+  font-size: 18px;
+}
+
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 6px;
-  color: var(--primary-burgundy);
+  color: var(--sacred-burgundy-dark);
   font-size: 14px;
 }
 
 .form-group input, .form-group textarea {
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--gold-border);
+  padding: 12px 14px;
+  border: 1.5px solid var(--gold-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 15px;
   outline: none;
-  transition: border-color 0.2s;
+  background-color: var(--gold-light-bg);
+  transition: all 0.2s;
 }
 
 .form-group input:focus, .form-group textarea:focus {
-  border-color: var(--primary-burgundy);
-  box-shadow: 0 0 0 3px rgba(92, 19, 29, 0.1);
+  border-color: var(--sacred-burgundy);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(92, 19, 29, 0.12);
 }
 
 .form-help {
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
 .modal-footer {
+  padding: 0 24px 24px;
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
 }
 
-/* Printable Sheet View (Matches User's Google Sheet) */
+/* ==========================================================================
+   Printable Sheet (Matches Reference & Clean Print Layout)
+   ========================================================================== */
+
 .printable-sheet {
   display: none;
   background: #ffffff;
-  padding: 20px;
+  padding: 24px;
   margin-top: 30px;
-  border: 2px solid #000;
+  border: 2px solid #5c131d;
 }
 
 .sheet-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 .sheet-table th, .sheet-table td {
-  border: 1px solid #000000;
-  padding: 8px 12px;
+  border: 1px solid #5c131d;
+  padding: 10px 14px;
   text-align: center;
   font-size: 15px;
 }
 
 .sheet-table th {
-  background-color: #7A1C29;
+  background-color: #5c131d;
   color: #ffffff;
   font-family: var(--font-serif);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: bold;
 }
 
-.sheet-header-img {
-  width: 140px;
-  margin-bottom: 10px;
-}
-
-/* Print CSS */
 @media print {
   body {
     background: white;
     color: black;
   }
-  .header-banner, .control-bar, .stats-card, .slots-container, .modal-overlay, footer {
+  .header-banner, .saint-quote-card, .control-bar, .stats-card, .slots-container, .modal-overlay, footer {
     display: none !important;
   }
   .printable-sheet {
@@ -592,86 +876,128 @@ body::before {
   }
 }
 
-/* Responsive & Mobile Native Enhancements */
+/* ==========================================================================
+   Responsive Mobile Optimization
+   ========================================================================== */
+
 @media (max-width: 600px) {
-  body {
-    padding-bottom: 90px;
-  }
   .header-banner {
-    padding: 24px 16px 20px;
+    padding: 28px 16px 24px;
   }
+  
   .monstrance-img {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
   }
+
+  .monstrance-halo {
+    width: 120px;
+    height: 120px;
+  }
+
   .header-title {
-    font-size: 20px;
+    font-size: 22px;
   }
-  .header-subtitle {
+
+  .vinde-adoremos {
     font-size: 13px;
+    letter-spacing: 2.5px;
   }
+
+  .schedule-pill-badge {
+    padding: 6px 18px;
+  }
+
+  .pill-time {
+    font-size: 15px;
+  }
+
+  .saint-quote-card {
+    margin-top: -16px;
+    padding: 16px 18px;
+    gap: 12px;
+  }
+
+  .quote-text {
+    font-size: 16px;
+  }
+
   .control-bar {
     flex-direction: column;
     align-items: stretch;
     padding: 14px;
-    margin-top: -15px;
   }
+
   .date-selector {
     justify-content: space-between;
     width: 100%;
   }
+
   .date-selector input[type="date"] {
     flex: 1;
     font-size: 15px;
   }
+
   .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
   }
+
   .action-buttons .btn {
     font-size: 13px;
-    padding: 10px 8px;
-    min-height: 44px; /* Touch target standard */
+    padding: 12px 10px;
+    min-height: 48px;
   }
+
+  .btn-reset {
+    grid-column: span 2;
+  }
+
   .slot-card {
     flex-direction: column;
     align-items: stretch;
-    padding: 14px;
-    gap: 12px;
+    padding: 16px;
+    gap: 14px;
   }
+
   .slot-time {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
-    padding: 10px 14px;
+    padding: 10px 16px;
   }
+
   .slot-time-text {
-    font-size: 22px;
+    font-size: 24px;
   }
+
   .slot-actions {
     width: 100%;
   }
+
   .slot-actions .btn {
     width: 100%;
-    padding: 12px;
-    font-size: 14px;
-    min-height: 46px;
+    padding: 14px;
+    font-size: 15px;
+    min-height: 48px;
   }
+
   .modal-card {
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     margin-top: auto;
     max-height: 90vh;
     overflow-y: auto;
   }
+
   .modal-overlay {
     align-items: flex-end;
     padding: 0;
   }
+
   .form-group input, .form-group textarea {
-    font-size: 16px; /* Prevents auto-zoom on iOS Safari */
-    padding: 12px;
+    font-size: 16px;
+    padding: 14px;
   }
 }
-
