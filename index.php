@@ -48,6 +48,7 @@
       <h1 class="header-title">Quinta-feira de Adoração</h1>
       <div class="header-subtitle-wrapper">
         <span class="vinde-adoremos">VINDE E ADOREMOS</span>
+        <div id="adminHeaderBadge" style="display: none;" class="admin-badge">🔑 Painel do Administrador</div>
       </div>
 
       <!-- Bottom Flourish -->
@@ -80,9 +81,12 @@
     <section class="saint-quote-card">
       <div class="quote-icon">“</div>
       <div class="quote-content">
-        <p class="quote-text">Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.</p>
-        <span class="quote-author">— São Boaventura</span>
+        <p class="quote-text" id="quoteText">Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.</p>
+        <span class="quote-author" id="quoteAuthor">— São Boaventura</span>
       </div>
+      <button id="editQuoteBtn" class="btn-edit-quote" style="display: none;" title="Editar Frase">
+        ✏️ Editar Frase
+      </button>
     </section>
 
     <!-- Controls & Actions -->
@@ -92,7 +96,7 @@
         <input type="date" id="adoracaoDate">
       </div>
 
-      <div class="action-buttons">
+      <div class="action-buttons" id="adminActionButtons" style="display: none;">
         <button id="shareWpBtn" class="btn btn-whatsapp" title="Compartilhar lista no WhatsApp">
           📱 Enviar no WhatsApp
         </button>
@@ -164,6 +168,33 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
           <button type="submit" class="btn btn-gold"> Confirmar Agendamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Quote Edit Dialog -->
+  <div class="modal-overlay" id="quoteModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Editar Frase de Oração</h3>
+        <button class="close-btn" id="closeQuoteModalBtn">&times;</button>
+      </div>
+      <form id="quoteForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="editQuoteText">Frase de Inspiração *</label>
+            <textarea id="editQuoteText" rows="3" required placeholder="Digite a frase inspiradora..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editQuoteAuthor">Autor / Santo *</label>
+            <input type="text" id="editQuoteAuthor" required placeholder="Ex: São Padre Pio">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelQuoteModalBtn">Cancelar</button>
+          <button type="submit" class="btn btn-gold">Salvar Frase</button>
         </div>
       </form>
     </div>

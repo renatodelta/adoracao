@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let scheduleData = null;
   let selectedTimeSlot = null;
 
+  // Detect Admin Mode from URL (?admin=true or ?admin=1 or /admin.html)
+  const urlParams = new URLSearchParams(window.location.search);
+  const isAdmin = urlParams.get('admin') === 'true' || urlParams.get('admin') === '1' || window.location.pathname.includes('admin');
+
   // DOM Elements
   const dateInput = document.getElementById('adoracaoDate');
   const slotsList = document.getElementById('slotsList');
@@ -12,7 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const statsCount = document.getElementById('statsCount');
   const alertBanner = document.getElementById('alertBanner');
   
-  // Modal Elements
+  // Admin Elements
+  const adminHeaderBadge = document.getElementById('adminHeaderBadge');
+  const adminActionButtons = document.getElementById('adminActionButtons');
+  const editQuoteBtn = document.getElementById('editQuoteBtn');
+  const quoteTextEl = document.getElementById('quoteText');
+  const quoteAuthorEl = document.getElementById('quoteAuthor');
+
+  // Booking Modal Elements
   const bookingModal = document.getElementById('bookingModal');
   const modalSlotTime = document.getElementById('modalSlotTime');
   const adorerNameInput = document.getElementById('adorerName');
@@ -21,6 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModalBtn = document.getElementById('closeModalBtn');
   const bookingForm = document.getElementById('bookingForm');
   
+  // Quote Modal Elements
+  const quoteModal = document.getElementById('quoteModal');
+  const editQuoteText = document.getElementById('editQuoteText');
+  const editQuoteAuthor = document.getElementById('editQuoteAuthor');
+  const cancelQuoteModalBtn = document.getElementById('cancelQuoteModalBtn');
+  const closeQuoteModalBtn = document.getElementById('closeQuoteModalBtn');
+  const quoteForm = document.getElementById('quoteForm');
+
   // Action Buttons
   const shareWpBtn = document.getElementById('shareWpBtn');
   const resetBtn = document.getElementById('resetBtn');
@@ -28,6 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Printable Table Element
   const printTableBody = document.getElementById('printTableBody');
   const printDateLabel = document.getElementById('printDateLabel');
+
+  // Apply Admin Visibility
+  if (isAdmin) {
+    if (adminHeaderBadge) adminHeaderBadge.style.display = 'inline-block';
+    if (adminActionButtons) adminActionButtons.style.display = 'flex';
+    if (editQuoteBtn) editQuoteBtn.style.display = 'inline-flex';
+  } else {
+    if (adminHeaderBadge) adminHeaderBadge.style.display = 'none';
+    if (adminActionButtons) adminActionButtons.style.display = 'none';
+    if (editQuoteBtn) editQuoteBtn.style.display = 'none';
+  }
 
   // Set default date input
   dateInput.value = currentDate;
@@ -61,6 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render Schedule Grid & Printable View
   function renderUI() {
     if (!scheduleData || !scheduleData.slots) return;
+
+    // Render Quote if present
+    if (scheduleData.quote_text && quoteTextEl) {
+      quoteTextEl.textContent = scheduleData.quote_text;
+    }
+    if (scheduleData.quote_author && quoteAuthorEl) {
+      const authorText = scheduleData.quote_author.startsWith('—') ? scheduleData.quote_author : `— ${scheduleData.quote_author}`;
+      quoteAuthorEl.textContent = authorText;
+    }
 
     slotsList.innerHTML = '';
     printTableBody.innerHTML = '';
@@ -102,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
           adorers.map((a, idx) => `
             <span class="adorer-badge">
               👤 ${escapeHtml(a.name)}
-              <button class="remove-btn" data-time="${slot.time}" data-index="${idx}" title="Remover adorador">&times;</button>
+              ${isAdmin ? `<button class="remove-btn" data-time="${slot.time}" data-index="${idx}" title="Remover adorador">&times;</button>` : ''}
             </span>
           `).join('') +
           `</div>`;
@@ -157,13 +196,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Attach Event Listeners to remove buttons & book buttons
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const time = e.target.getAttribute('data-time');
-        const index = parseInt(e.target.getAttribute('data-index'), 10);
-        confirmRemoveAdorer(time, index);
+    if (isAdmin) {
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const time = e.target.getAttribute('data-time');
+          const index = parseInt(e.target.getAttribute('data-index'), 10);
+          confirmRemoveAdorer(time, index);
+        });
       });
-    });
+    }
 
     document.querySelectorAll('.open-book-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -183,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adorerNameInput.focus();
   }
 
-  // Close Modal
+  // Close Booking Modal
   function closeModal() {
     bookingModal.classList.remove('active');
     selectedTimeSlot = null;
@@ -192,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   closeModalBtn.addEventListener('click', closeModal);
   cancelModalBtn.addEventListener('click', closeModal);
 
-  // Form Submit Handler
+  // Booking Form Submit Handler
   bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = adorerNameInput.value.trim();
@@ -227,7 +268,63 @@ document.addEventListener('DOMContentLoaded', () => {
     renderUI();
   });
 
-  // Remove Adorer
+  // Quote Edit Modal Handlers (Admin Only)
+  if (editQuoteBtn) {
+    editQuoteBtn.addEventListener('click', () => {
+      editQuoteText.value = scheduleData.quote_text || (quoteTextEl ? quoteTextEl.textContent : '');
+      editQuoteAuthor.value = (scheduleData.quote_author || (quoteAuthorEl ? quoteAuthorEl.textContent : '')).replace(/^—\s*/, '');
+      quoteModal.classList.add('active');
+      editQuoteText.focus();
+    });
+  }
+
+  function closeQuoteModal() {
+    quoteModal.classList.remove('active');
+  }
+
+  if (closeQuoteModalBtn) closeQuoteModalBtn.addEventListener('click', closeQuoteModal);
+  if (cancelQuoteModalBtn) cancelQuoteModalBtn.addEventListener('click', closeQuoteModal);
+
+  if (quoteForm) {
+    quoteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = editQuoteText.value.trim();
+      const author = editQuoteAuthor.value.trim();
+
+      if (!text || !author) return;
+
+      try {
+        const response = await fetch('api.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save_quote',
+            date: currentDate,
+            quote_text: text,
+            quote_author: author
+          })
+        });
+
+        if (response.ok) {
+          const json = await response.json();
+          scheduleData = json.data;
+        } else {
+          throw new Error('Fallback local save');
+        }
+      } catch (err) {
+        if (scheduleData) {
+          scheduleData.quote_text = text;
+          scheduleData.quote_author = author;
+          localStorage.setItem(`adoracao_${currentDate}`, JSON.stringify(scheduleData));
+        }
+      }
+
+      closeQuoteModal();
+      renderUI();
+    });
+  }
+
+  // Remove Adorer Handler (Admin Only)
   async function confirmRemoveAdorer(time, index) {
     if (!confirm(`Deseja remover o adorador deste horário (${time})?`)) return;
 
@@ -235,12 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('api.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'remove',
-          date: currentDate,
-          time: time,
-          index: index
-        })
+        body: JSON.stringify({ action: 'remove', date: currentDate, time, index })
       });
 
       if (response.ok) {
@@ -256,63 +348,73 @@ document.addEventListener('DOMContentLoaded', () => {
     renderUI();
   }
 
-  // Share via WhatsApp
-  shareWpBtn.addEventListener('click', () => {
-    if (!scheduleData || !scheduleData.slots) return;
+  // Share via WhatsApp (Admin)
+  if (shareWpBtn) {
+    shareWpBtn.addEventListener('click', () => {
+      if (!scheduleData || !scheduleData.slots) return;
 
-    let emptyHours = [];
-    let filledSummary = [];
+      let emptyHours = [];
+      let filledSummary = [];
 
-    scheduleData.slots.forEach(slot => {
-      const isClosing = slot.time === '19:00';
-      if (isClosing) return;
+      scheduleData.slots.forEach(slot => {
+        const isClosing = slot.time === '19:00';
+        if (isClosing) return;
 
-      const adorers = (slot.adorers || []).map(a => a.name).join(', ');
-      if (!adorers) {
-        emptyHours.push(slot.time);
+        const adorers = (slot.adorers || []).map(a => a.name).join(', ');
+        if (!adorers) {
+          emptyHours.push(slot.time);
+        } else {
+          filledSummary.push(`• *${slot.time}*: ${adorers}`);
+        }
+      });
+
+      let msg = `✝️ *QUINTA-FEIRA DE ADORAÇÃO - COMUNIDADE DO FORMOSO* ✝️\n\n`;
+      msg += `📅 *Data:* ${formatDateBR(currentDate)}\n\n`;
+
+      if (emptyHours.length > 0) {
+        msg += `⚠️ *HORÁRIOS QUE PRECISAM DE ADORADOR:* \n`;
+        msg += emptyHours.map(h => ` 🕒 ${h} - (VAGO)`).join('\n') + `\n\n`;
+        msg += `Inscreva-se para garantir a presença diante do Santíssimo Sacramento.\n\n`;
       } else {
-        filledSummary.push(`• *${slot.time}*: ${adorers}`);
+        msg += `*Todos os horários estão preenchidos. Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
+      }
+
+      msg += `📋 *Escala Atual:* \n` + filledSummary.join('\n') + `\n\n`;
+
+      const qText = scheduleData.quote_text || "Mil anos de gozo humano não valem uma só hora passada em doce comunhão com Jesus no Santíssimo Sacramento.";
+      const qAuthor = (scheduleData.quote_author || "São Padre Pio").replace(/^—\s*/, '');
+      msg += `_“${qText}”_\n— *${qAuthor}*`;
+
+      const encodedMsg = encodeURIComponent(msg);
+      window.open(`https://api.whatsapp.com/send?text=${encodedMsg}`, '_blank');
+    });
+  }
+
+  // Reset to default scale (Admin)
+  if (resetBtn) {
+    resetBtn.addEventListener('click', async () => {
+      if (confirm("Tem certeza que deseja restaurar os horários padrão desta Quinta-feira?")) {
+        try {
+          const response = await fetch('api.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'reset_day', date: currentDate })
+          });
+          if (response.ok) {
+            const json = await response.json();
+            scheduleData = json.data;
+          } else {
+            throw new Error('Fallback reset');
+          }
+        } catch (err) {
+          localStorage.removeItem(`adoracao_${currentDate}`);
+          scheduleData = getLocalStorageData(currentDate);
+        }
+        renderUI();
+        alert("Horários restaurados para o padrão com sucesso!");
       }
     });
-
-    let msg = `✝️ *QUINTA-FEIRA DE ADORAÇÃO - COMUNIDADE DO FORMOSO* ✝️\n\n`;
-    msg += `📅 *Data:* ${formatDateBR(currentDate)}\n\n`;
-
-    if (emptyHours.length > 0) {
-      msg += `⚠️ *HORÁRIOS QUE PRECISAM DE ADORADOR:* \n`;
-      msg += emptyHours.map(h => ` 🕒 ${h} - (VAGO)`).join('\n') + `\n\n`;
-      msg += `Inscreva-se para garantir a presença diante do Santíssimo Sacramento.\n\n`;
-    } else {
-      msg += `*Todos os horários estão preenchidos. Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
-    }
-
-    msg += `📋 *Escala Atual:* \n` + filledSummary.join('\n') + `\n\n`;
-    msg += `_“Mil anos de gozo humano não valem uma só hora passada em doce comunhão com Jesus no Santíssimo Sacramento.”_\n— *São Padre Pio*`;
-
-    const encodedMsg = encodeURIComponent(msg);
-    window.open(`https://api.whatsapp.com/send?text=${encodedMsg}`, '_blank');
-  });
-
-  // Reset to default scale
-  resetBtn.addEventListener('click', async () => {
-    if (confirm("Tem certeza que deseja restaurar os horários padrão desta Quinta-feira?")) {
-      try {
-        const response = await fetch('api.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'reset_day', date: currentDate })
-        });
-        if (response.ok) {
-          const json = await response.json();
-          scheduleData = json.data;
-        }
-      } catch (err) {
-        localStorage.removeItem(`adoracao_${currentDate}`);
-        scheduleData = getLocalStorageData(currentDate);
-      }
-      renderUI();
-    }
-  });
+  }
 
   // Helpers
   function getNextThursdayDateStr() {
@@ -331,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function escapeHtml(str) {
-    return str.replace(/[&<>"']/g, m => ({
+    return (str || '').replace(/[&<>"']/g, m => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
     })[m]);
   }
@@ -340,10 +442,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function getLocalStorageData(dateStr) {
     const key = `adoracao_${dateStr}`;
     const stored = localStorage.getItem(key);
-    if (stored) return JSON.parse(stored);
-
+    if (stored) {
+      try { return JSON.parse(stored); } catch (e) {}
+    }
     const defaultData = {
       date: dateStr,
+      quote_text: "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
+      quote_author: "São Boaventura",
       slots: [
         { time: "05:00", adorers: [{ name: "Rosário" }] },
         { time: "06:00", adorers: [{ name: "Rosário" }] },

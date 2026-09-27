@@ -58,6 +58,8 @@ export async function onRequest(context) {
         date: dateStr,
         title: "Quinta-feira de Adoração",
         community: "Comunidade do Formoso",
+        quote_text: "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
+        quote_author: "São Boaventura",
         slots: getDefaultSlots(),
         last_updated: new Date().toISOString()
       };
@@ -100,6 +102,13 @@ export async function onRequest(context) {
     const date = body.date || new Date().toISOString().split('T')[0];
 
     let data = await getData(date);
+
+    if (action === 'save_quote') {
+      data.quote_text = (body.quote_text || "").trim();
+      data.quote_author = (body.quote_author || "").trim();
+      await saveData(date, data);
+      return new Response(JSON.stringify({ status: 'success', message: 'Frase atualizada com sucesso!', data }), { headers: CORS_HEADERS });
+    }
 
     if (action === 'book') {
       const { time, name, intention } = body;

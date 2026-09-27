@@ -1002,3 +1002,39 @@ body::before {
     padding: 14px;
   }
 }
+
+/* Admin Mode Styles */
+.admin-badge {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.2);
+  border: 1px solid var(--gold-border);
+  color: #fbf5b7;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 10px;
+  letter-spacing: 0.5px;
+}
+
+.btn-edit-quote {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--gold-border);
+  color: var(--sacred-burgundy);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-edit-quote:hover {
+  background: var(--gold-light-bg);
+  border-color: var(--gold-primary);
+  transform: translateY(-1px);
+}

@@ -86,9 +86,20 @@ if ($method === 'POST') {
             "date" => $date,
             "title" => "Quinta-feira de Adoração",
             "community" => "Comunidade do Formoso",
+            "quote_text" => "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
+            "quote_author" => "São Boaventura",
             "slots" => getDefaultSlots(),
             "last_updated" => date('c')
         ];
+    }
+
+    if ($action === 'save_quote') {
+        $data['quote_text'] = trim(isset($input['quote_text']) ? $input['quote_text'] : '');
+        $data['quote_author'] = trim(isset($input['quote_author']) ? $input['quote_author'] : '');
+        $data['last_updated'] = date('c');
+        file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(["status" => "success", "message" => "Frase atualizada com sucesso!", "data" => $data]);
+        exit;
     }
 
     if ($action === 'book') {
