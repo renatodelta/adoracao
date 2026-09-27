@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const bookingModal = document.getElementById('bookingModal');
   const modalSlotTime = document.getElementById('modalSlotTime');
   const adorerNameInput = document.getElementById('adorerName');
-  const adorerPhoneInput = document.getElementById('adorerPhone');
   const adorerIntentionInput = document.getElementById('adorerIntention');
   const cancelModalBtn = document.getElementById('cancelModalBtn');
   const closeModalBtn = document.getElementById('closeModalBtn');
@@ -24,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Action Buttons
   const shareWpBtn = document.getElementById('shareWpBtn');
-  const printBtn = document.getElementById('printBtn');
   const resetBtn = document.getElementById('resetBtn');
 
   // Printable Table Element
@@ -180,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedTimeSlot = time;
     modalSlotTime.textContent = time;
     adorerNameInput.value = '';
-    adorerPhoneInput.value = '';
     adorerIntentionInput.value = '';
     bookingModal.classList.add('active');
     adorerNameInput.focus();
@@ -199,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
   bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = adorerNameInput.value.trim();
-    const phone = adorerPhoneInput.value.trim();
     const intention = adorerIntentionInput.value.trim();
 
     if (!name || !selectedTimeSlot) return;
@@ -213,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
           date: currentDate,
           time: selectedTimeSlot,
           name: name,
-          phone: phone,
           intention: intention
         })
       });
@@ -225,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Fallback local save');
       }
     } catch (err) {
-      saveLocalStorageBook(currentDate, selectedTimeSlot, name, phone, intention);
+      saveLocalStorageBook(currentDate, selectedTimeSlot, name, intention);
     }
 
     closeModal();
@@ -280,27 +275,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    let msg = `✨ *QUINTA-FEIRA DE ADORAÇÃO - COMUNIDADE DO FORMOSO* ✨\n`;
+    let msg = `✝️ *QUINTA-FEIRA DE ADORAÇÃO - COMUNIDADE DO FORMOSO* ✝️\n\n`;
     msg += `📅 *Data:* ${formatDateBR(currentDate)}\n\n`;
 
     if (emptyHours.length > 0) {
-      msg += `🚨 *HORÁRIOS QUE PRECISADAM DE ADORADOR:* \n`;
+      msg += `⚠️ *HORÁRIOS QUE PRECISAM DE ADORADOR:* \n`;
       msg += emptyHours.map(h => ` 🕒 ${h} - (VAGO)`).join('\n') + `\n\n`;
-      msg += ` Inscreva-se para não deixar Jesus sozinho no altar!\n\n`;
+      msg += `Inscreva-se para garantir a presença diante do Santíssimo Sacramento.\n\n`;
     } else {
-      msg += `🙌 *Todos os horários estão preenchidos! Louvado seja Deus!*\n\n`;
+      msg += `*Todos os horários estão preenchidos. Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
     }
 
     msg += `📋 *Escala Atual:* \n` + filledSummary.join('\n') + `\n\n`;
-    msg += `👉 Marque seu horário e acompanhe a escala completa acessando a página da comunidade!`;
+    msg += `_“Mil anos de gozo humano não valem uma só hora passada em doce comunhão com Jesus no Santíssimo Sacramento.”_\n— *São Padre Pio*`;
 
     const encodedMsg = encodeURIComponent(msg);
     window.open(`https://api.whatsapp.com/send?text=${encodedMsg}`, '_blank');
-  });
-
-  // Print Sheet
-  printBtn.addEventListener('click', () => {
-    window.print();
   });
 
   // Reset to default scale
@@ -376,12 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return defaultData;
   }
 
-  function saveLocalStorageBook(dateStr, time, name, phone, intention) {
+  function saveLocalStorageBook(dateStr, time, name, intention) {
     const data = getLocalStorageData(dateStr);
     const slot = data.slots.find(s => s.time === time);
     if (slot) {
       if (!slot.adorers) slot.adorers = [];
-      slot.adorers.push({ name, phone, intention });
+      slot.adorers.push({ name, intention });
       localStorage.setItem(`adoracao_${dateStr}`, JSON.stringify(data));
       scheduleData = data;
     }
