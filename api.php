@@ -81,6 +81,10 @@ if ($method === 'POST') {
 
     if (file_exists($filePath)) {
         $data = json_decode(file_get_contents($filePath), true);
+        if (!isset($data['quote_text'])) {
+            $data['quote_text'] = "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
+            $data['quote_author'] = "São Boaventura";
+        }
     } else {
         $data = [
             "date" => $date,

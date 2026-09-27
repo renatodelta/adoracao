@@ -64,6 +64,11 @@ export async function onRequest(context) {
         last_updated: new Date().toISOString()
       };
       await saveData(dateStr, data);
+    } else {
+      if (!data.quote_text) {
+        data.quote_text = "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
+        data.quote_author = "São Boaventura";
+      }
     }
 
     return data;

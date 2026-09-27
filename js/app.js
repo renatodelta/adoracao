@@ -221,7 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
     adorerNameInput.value = '';
     adorerIntentionInput.value = '';
     bookingModal.classList.add('active');
-    adorerNameInput.focus();
+    bookingModal.scrollTop = 0;
+    setTimeout(() => {
+      adorerNameInput.focus();
+    }, 150);
   }
 
   // Close Booking Modal
@@ -271,10 +274,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Quote Edit Modal Handlers (Admin Only)
   if (editQuoteBtn) {
     editQuoteBtn.addEventListener('click', () => {
-      editQuoteText.value = scheduleData.quote_text || (quoteTextEl ? quoteTextEl.textContent : '');
-      editQuoteAuthor.value = (scheduleData.quote_author || (quoteAuthorEl ? quoteAuthorEl.textContent : '')).replace(/^—\s*/, '');
+      const currentText = (scheduleData && scheduleData.quote_text) ? scheduleData.quote_text : (quoteTextEl ? quoteTextEl.textContent : '');
+      const currentAuthor = (scheduleData && scheduleData.quote_author) ? scheduleData.quote_author : (quoteAuthorEl ? quoteAuthorEl.textContent : '');
+      editQuoteText.value = currentText;
+      editQuoteAuthor.value = currentAuthor.replace(/^—\s*/, '');
       quoteModal.classList.add('active');
-      editQuoteText.focus();
+      quoteModal.scrollTop = 0;
+      setTimeout(() => {
+        editQuoteText.focus();
+      }, 150);
     });
   }
 
