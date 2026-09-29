@@ -156,7 +156,7 @@
           </p>
 
           <div class="form-group">
-            <label for="adorerName">Seu Nome Completo *</label>
+            <label for="adorerName">Nome *</label>
             <input type="text" id="adorerName" placeholder="Ex: Maria da Silva" required autocomplete="name">
           </div>
 

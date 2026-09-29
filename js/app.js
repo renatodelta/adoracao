@@ -222,6 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
     adorerIntentionInput.value = '';
     bookingModal.classList.add('active');
     bookingModal.scrollTop = 0;
+    const modalBody = bookingModal.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
     setTimeout(() => {
       adorerNameInput.focus();
     }, 150);
