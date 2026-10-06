@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const formattedText = `🙏 *Mural de Pedidos de Oração — Quinta-feira de Adoração*\n📅 *Data:* ${formatDateBR(currentDate)}\n\n${allIntentions.join('\n\n')}\n\n"Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!"`;
+      const formattedText = `🙏 *Pedidos de Oração — Quinta-feira de Adoração*\n📅 *Data:* ${formatDateBR(currentDate)}\n\n${allIntentions.join('\n\n')}\n\n"Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!"`;
 
       navigator.clipboard.writeText(formattedText).then(() => {
         const origText = copyIntentionsBtn.textContent;

@@ -97,7 +97,7 @@
           <input type="date" id="adoracaoDate">
         </div>
         <button id="viewIntentionsBtn" class="btn btn-mural" title="Ver Pedidos e Intenções de Oração">
-          🙏 Mural de Oração
+          🙏 Pedidos de Oração
         </button>
       </div>
 
@@ -209,7 +209,7 @@
   <div class="modal-overlay" id="intentionsModal">
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
-        <h3>🙏 Mural de Pedidos de Oração</h3>
+        <h3>🙏 Pedidos de Oração</h3>
         <button class="close-btn" id="closeIntentionsModalBtn">&times;</button>
       </div>
       <div class="modal-body">
@@ -223,7 +223,7 @@
         </div>
 
         <div class="intentions-intro">
-          <p class="intentions-subtitle">Intenções registradas para <strong id="intentionsDateLabel"></strong>:</p>
+          <p class="intentions-subtitle">Intenções para <strong id="intentionsDateLabel"></strong>:</p>
         </div>
 
         <!-- Lista dinâmica de intenções -->
