@@ -44,6 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const shareWpBtn = document.getElementById('shareWpBtn');
   const resetBtn = document.getElementById('resetBtn');
 
+  // Intentions / Mural Elements
+  const viewIntentionsBtn = document.getElementById('viewIntentionsBtn');
+  const intentionsModal = document.getElementById('intentionsModal');
+  const closeIntentionsModalBtn = document.getElementById('closeIntentionsModalBtn');
+  const closeIntentionsFooterBtn = document.getElementById('closeIntentionsFooterBtn');
+  const intentionsDateLabel = document.getElementById('intentionsDateLabel');
+  const intentionsList = document.getElementById('intentionsList');
+  const bookingSuccessNotice = document.getElementById('bookingSuccessNotice');
+  const addGeneralIntentionForm = document.getElementById('addGeneralIntentionForm');
+  const generalIntentionName = document.getElementById('generalIntentionName');
+  const generalIntentionText = document.getElementById('generalIntentionText');
+  const copyIntentionsBtn = document.getElementById('copyIntentionsBtn');
+
   // Printable Table Element
   const printTableBody = document.getElementById('printTableBody');
   const printDateLabel = document.getElementById('printDateLabel');
@@ -271,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeModal();
     renderUI();
+    openIntentionsModal(true);
   });
 
   // Quote Edit Modal Handlers (Admin Only)
@@ -500,6 +514,193 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem(`adoracao_${dateStr}`, JSON.stringify(data));
       scheduleData = data;
     }
+  }
+
+  // Intentions / Mural Modal Handlers
+  function openIntentionsModal(isPostBooking = false) {
+    if (!intentionsModal) return;
+    if (intentionsDateLabel) intentionsDateLabel.textContent = formatDateBR(currentDate);
+    
+    if (bookingSuccessNotice) {
+      bookingSuccessNotice.style.display = isPostBooking ? 'flex' : 'none';
+    }
+
+    renderIntentionsList();
+    intentionsModal.classList.add('active');
+    
+    const modalBody = intentionsModal.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
+  }
+
+  function closeIntentionsModal() {
+    if (!intentionsModal) return;
+    intentionsModal.classList.remove('active');
+  }
+
+  if (viewIntentionsBtn) {
+    viewIntentionsBtn.addEventListener('click', () => openIntentionsModal(false));
+  }
+
+  if (closeIntentionsModalBtn) closeIntentionsModalBtn.addEventListener('click', closeIntentionsModal);
+  if (closeIntentionsFooterBtn) closeIntentionsFooterBtn.addEventListener('click', closeIntentionsModal);
+
+  function renderIntentionsList() {
+    if (!intentionsList) return;
+    intentionsList.innerHTML = '';
+
+    const allIntentions = [];
+
+    // 1. Intentions from schedule slots
+    if (scheduleData && Array.isArray(scheduleData.slots)) {
+      scheduleData.slots.forEach(slot => {
+        if (Array.isArray(slot.adorers)) {
+          slot.adorers.forEach(adorer => {
+            if (adorer.intention && adorer.intention.trim() !== '') {
+              allIntentions.push({
+                name: adorer.name || 'Adorador',
+                time: slot.time,
+                intention: adorer.intention.trim(),
+                type: 'slot'
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // 2. General Community Intentions
+    if (scheduleData && Array.isArray(scheduleData.general_intentions)) {
+      scheduleData.general_intentions.forEach(item => {
+        if (item.intention && item.intention.trim() !== '') {
+          allIntentions.push({
+            name: item.name || 'Anônimo',
+            time: null,
+            intention: item.intention.trim(),
+            type: 'general'
+          });
+        }
+      });
+    }
+
+    if (allIntentions.length === 0) {
+      intentionsList.innerHTML = `
+        <div class="empty-intentions-card">
+          <div class="empty-icon">🕊️</div>
+          <p class="empty-title">Nenhum pedido de oração registrado ainda para este dia.</p>
+          <p class="empty-desc">Seja o primeiro a colocar suas intenções diante de Jesus no Santíssimo Sacramento!</p>
+        </div>
+      `;
+      return;
+    }
+
+    allIntentions.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'intention-card';
+      
+      const badgeText = item.time ? `Horário: ${item.time}h` : `Intenção da Comunidade`;
+
+      card.innerHTML = `
+        <div class="intention-card-header">
+          <span class="intention-author">🙏 <strong>${escapeHtml(item.name)}</strong></span>
+          <span class="intention-badge">${escapeHtml(badgeText)}</span>
+        </div>
+        <div class="intention-card-body">
+          "${escapeHtml(item.intention)}"
+        </div>
+      `;
+      intentionsList.appendChild(card);
+    });
+  }
+
+  // Add General Intention Form Handler
+  if (addGeneralIntentionForm) {
+    addGeneralIntentionForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = generalIntentionName.value.trim();
+      const intention = generalIntentionText.value.trim();
+
+      if (!intention) return;
+
+      try {
+        const response = await fetch('api.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'add_general_intention',
+            date: currentDate,
+            name: name,
+            intention: intention
+          })
+        });
+
+        if (response.ok) {
+          const json = await response.json();
+          scheduleData = json.data;
+        } else {
+          throw new Error('Fallback local save');
+        }
+      } catch (err) {
+        saveLocalStorageGeneralIntention(currentDate, name, intention);
+      }
+
+      generalIntentionText.value = '';
+      if (generalIntentionName) generalIntentionName.value = '';
+      renderIntentionsList();
+      renderUI();
+    });
+  }
+
+  // Copy Intentions Handler
+  if (copyIntentionsBtn) {
+    copyIntentionsBtn.addEventListener('click', () => {
+      const allIntentions = [];
+      if (scheduleData && Array.isArray(scheduleData.slots)) {
+        scheduleData.slots.forEach(slot => {
+          if (Array.isArray(slot.adorers)) {
+            slot.adorers.forEach(adorer => {
+              if (adorer.intention && adorer.intention.trim() !== '') {
+                allIntentions.push(`• *${adorer.name}* (${slot.time}h): "${adorer.intention.trim()}"`);
+              }
+            });
+          }
+        });
+      }
+      if (scheduleData && Array.isArray(scheduleData.general_intentions)) {
+        scheduleData.general_intentions.forEach(item => {
+          if (item.intention && item.intention.trim() !== '') {
+            allIntentions.push(`• *${item.name}*: "${item.intention.trim()}"`);
+          }
+        });
+      }
+
+      if (allIntentions.length === 0) {
+        alert('Nenhuma intenção cadastrada para copiar.');
+        return;
+      }
+
+      const formattedText = `🙏 *Mural de Pedidos de Oração — Quinta-feira de Adoração*\n📅 *Data:* ${formatDateBR(currentDate)}\n\n${allIntentions.join('\n\n')}\n\n"Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!"`;
+
+      navigator.clipboard.writeText(formattedText).then(() => {
+        const origText = copyIntentionsBtn.textContent;
+        copyIntentionsBtn.textContent = '✅ Copiado!';
+        setTimeout(() => {
+          copyIntentionsBtn.textContent = origText;
+        }, 2000);
+      }).catch(() => {
+        alert('Não foi possível copiar automaticamente.');
+      });
+    });
+  }
+
+  function saveLocalStorageGeneralIntention(dateStr, name, intention) {
+    const data = getLocalStorageData(dateStr);
+    if (!data.general_intentions) data.general_intentions = [];
+    data.general_intentions.push({
+      name: name || 'Anônimo',
+      intention: intention
+    });
+    localStorage.setItem(`adoracao_${dateStr}`, JSON.stringify(data));
+    scheduleData = data;
   }
 
   // Initial Load

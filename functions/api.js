@@ -166,6 +166,28 @@ export async function onRequest(context) {
       return new Response(JSON.stringify({ status: 'success', message: 'Horários reiniciados para o padrão!', data }), { headers: CORS_HEADERS });
     }
 
+    if (action === 'add_general_intention') {
+      const name = (body.name || "Anônimo").trim();
+      const intention = (body.intention || "").trim();
+
+      if (!intention) {
+        return new Response(JSON.stringify({ status: 'error', message: 'O pedido de oração não pode estar vazio.' }), { headers: CORS_HEADERS });
+      }
+
+      if (!Array.isArray(data.general_intentions)) {
+        data.general_intentions = [];
+      }
+
+      data.general_intentions.push({
+        name: name || "Anônimo",
+        intention: intention,
+        created_at: new Date().toISOString()
+      });
+
+      await saveData(date, data);
+      return new Response(JSON.stringify({ status: 'success', message: 'Pedido de oração adicionado com sucesso!', data }), { headers: CORS_HEADERS });
+    }
+
     if (action === 'save_all') {
       if (Array.isArray(body.slots)) {
         data.slots = body.slots;

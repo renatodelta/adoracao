@@ -91,9 +91,14 @@
 
     <!-- Controls & Actions -->
     <section class="control-bar">
-      <div class="date-selector">
-        <label for="adoracaoDate">📅 Data da Adoração:</label>
-        <input type="date" id="adoracaoDate">
+      <div class="control-left">
+        <div class="date-selector">
+          <label for="adoracaoDate">📅 Data da Adoração:</label>
+          <input type="date" id="adoracaoDate">
+        </div>
+        <button id="viewIntentionsBtn" class="btn btn-mural" title="Ver Pedidos e Intenções de Oração">
+          🙏 Mural de Oração
+        </button>
       </div>
 
       <div class="action-buttons" id="adminActionButtons" style="display: none;">
@@ -197,6 +202,53 @@
           <button type="submit" class="btn btn-gold">Salvar Frase</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal Mural de Oração / Pedidos e Intenções -->
+  <div class="modal-overlay" id="intentionsModal">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <h3>🙏 Mural de Pedidos de Oração</h3>
+        <button class="close-btn" id="closeIntentionsModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Banner de sucesso pós-agendamento -->
+        <div id="bookingSuccessNotice" class="booking-success-banner" style="display: none;">
+          <div class="success-icon">✨</div>
+          <div class="success-text">
+            <strong>Inscrição Confirmada!</strong>
+            <p>Deus abençoe sua disponibilidade! Durante a sua hora de adoração, coloque em suas preces estas intenções e pedidos de oração da nossa comunidade:</p>
+          </div>
+        </div>
+
+        <div class="intentions-intro">
+          <p class="intentions-subtitle">Intenções registradas para <strong id="intentionsDateLabel"></strong>:</p>
+        </div>
+
+        <!-- Lista dinâmica de intenções -->
+        <div id="intentionsList" class="intentions-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Formulário para incluir novo pedido de oração diretamente -->
+        <div class="add-intention-box">
+          <h4 class="add-intention-title">🕊️ Deixar um Pedido de Oração</h4>
+          <form id="addGeneralIntentionForm">
+            <div class="form-group-compact">
+              <input type="text" id="generalIntentionName" placeholder="Seu Nome (opcional / anônimo)" class="form-input-sm">
+            </div>
+            <div class="form-group-compact">
+              <textarea id="generalIntentionText" rows="2" placeholder="Escreva aqui sua intenção ou pedido de oração..." required class="form-input-sm"></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold btn-sm" style="width: 100%; margin-top: 6px;">➕ Registrar Pedido de Oração</button>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button type="button" class="btn btn-outline" id="copyIntentionsBtn">📋 Copiar Intenções</button>
+        <button type="button" class="btn btn-gold" id="closeIntentionsFooterBtn">Fechar</button>
+      </div>
     </div>
   </div>
 

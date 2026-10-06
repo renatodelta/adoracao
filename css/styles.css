@@ -1116,3 +1116,207 @@ body::before {
   border-color: var(--gold-primary);
   transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   Mural de Oração & Pedidos (Branch Teste)
+   ========================================================================== */
+
+.control-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-mural {
+  background: linear-gradient(135deg, var(--sacred-burgundy) 0%, var(--sacred-burgundy-medium) 100%);
+  color: var(--gold-bright);
+  border: 1px solid var(--gold-primary);
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-mural:hover {
+  background: linear-gradient(135deg, var(--sacred-burgundy-dark) 0%, var(--sacred-burgundy) 100%);
+  border-color: var(--gold-hover);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  transform: translateY(-1px);
+}
+
+.modal-card-lg {
+  max-width: 620px;
+}
+
+/* Booking Success Notice */
+.booking-success-banner {
+  background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+  border: 1.5px solid var(--gold-primary);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+}
+
+.booking-success-banner .success-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.booking-success-banner .success-text strong {
+  color: var(--sacred-burgundy-dark);
+  font-size: 16px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.booking-success-banner .success-text p {
+  color: #713f12;
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Intentions List & Cards */
+.intentions-intro {
+  margin-bottom: 12px;
+}
+
+.intentions-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.intentions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 20px;
+}
+
+.intention-card {
+  background: var(--sacred-parchment);
+  border: 1px solid var(--gold-border);
+  border-left: 4px solid var(--sacred-burgundy);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.intention-card:hover {
+  border-color: var(--gold-primary);
+  transform: translateX(2px);
+}
+
+.intention-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.intention-author {
+  color: var(--sacred-burgundy-dark);
+  font-size: 14px;
+}
+
+.intention-badge {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.intention-card-body {
+  font-family: var(--font-quote);
+  font-size: 16px;
+  color: var(--text-primary);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Empty Intentions State */
+.empty-intentions-card {
+  text-align: center;
+  padding: 28px 16px;
+  background: #fdfbf7;
+  border: 1px dashed var(--gold-border);
+  border-radius: var(--radius-md);
+}
+
+.empty-intentions-card .empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.empty-intentions-card .empty-title {
+  font-weight: 600;
+  color: var(--sacred-burgundy-dark);
+  margin-bottom: 4px;
+}
+
+.empty-intentions-card .empty-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Add Intention Box */
+.add-intention-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: 10px;
+}
+
+.add-intention-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sacred-burgundy);
+  margin-bottom: 10px;
+}
+
+.form-group-compact {
+  margin-bottom: 8px;
+}
+
+.form-input-sm {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  transition: border-color 0.2s ease;
+}
+
+.form-input-sm:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+

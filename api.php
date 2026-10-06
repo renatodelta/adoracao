@@ -172,6 +172,31 @@ if ($method === 'POST') {
         exit;
     }
 
+    if ($action === 'add_general_intention') {
+        $name = trim(isset($input['name']) ? $input['name'] : 'Anônimo');
+        $intention = trim(isset($input['intention']) ? $input['intention'] : '');
+
+        if (empty($intention)) {
+            echo json_encode(["status" => "error", "message" => "O pedido de oração não pode estar vazio."]);
+            exit;
+        }
+
+        if (!isset($data['general_intentions']) || !is_array($data['general_intentions'])) {
+            $data['general_intentions'] = [];
+        }
+
+        $data['general_intentions'][] = [
+            "name" => empty($name) ? "Anônimo" : $name,
+            "intention" => $intention,
+            "created_at" => date('c')
+        ];
+
+        $data['last_updated'] = date('c');
+        file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        echo json_encode(["status" => "success", "message" => "Pedido de oração adicionado com sucesso!", "data" => $data]);
+        exit;
+    }
+
     if ($action === 'save_all') {
         if (isset($input['slots']) && is_array($input['slots'])) {
             $data['slots'] = $input['slots'];
