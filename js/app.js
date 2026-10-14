@@ -22,26 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const editQuoteBtn = document.getElementById('editQuoteBtn');
   const quoteTextEl = document.getElementById('quoteText');
   const quoteAuthorEl = document.getElementById('quoteAuthor');
-  const adminPhotoBadgeBtn = document.getElementById('adminPhotoBadgeBtn');
-  const adminChangePhotoBtn = document.getElementById('adminChangePhotoBtn');
-
-  // Monstrance Elements
   const monstranceImg = document.getElementById('monstranceImg');
   const sheetHeaderImg = document.getElementById('sheetHeaderImg');
-
-  // Custódia Photo Modal Elements
-  const custodiaPhotoModal = document.getElementById('custodiaPhotoModal');
-  const closePhotoModalBtn = document.getElementById('closePhotoModalBtn');
-  const cancelPhotoModalBtn = document.getElementById('cancelPhotoModalBtn');
-  const savePhotoModalBtn = document.getElementById('savePhotoModalBtn');
-  const resetPhotoOriginalBtn = document.getElementById('resetPhotoOriginalBtn');
-  const photoDropzone = document.getElementById('photoDropzone');
-  const custodiaFileInput = document.getElementById('custodiaFileInput');
-  const photoPreviewImg = document.getElementById('photoPreviewImg');
-  const fitModeContain = document.getElementById('fitModeContain');
-  const fitModeOstensorio = document.getElementById('fitModeOstensorio');
-  const photoStatusText = document.getElementById('photoStatusText');
-  let selectedPhotoBase64 = null;
 
   // Intentions Ticker Bar Elements
   const tickerTrack = document.getElementById('tickerTrack');
@@ -91,14 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminHeaderBadge) adminHeaderBadge.style.display = 'inline-block';
     if (adminActionButtons) adminActionButtons.style.display = 'flex';
     if (editQuoteBtn) editQuoteBtn.style.display = 'inline-flex';
-    if (adminPhotoBadgeBtn) adminPhotoBadgeBtn.style.display = 'flex';
-    if (adminChangePhotoBtn) adminChangePhotoBtn.style.display = 'inline-flex';
   } else {
     if (adminHeaderBadge) adminHeaderBadge.style.display = 'none';
     if (adminActionButtons) adminActionButtons.style.display = 'none';
     if (editQuoteBtn) editQuoteBtn.style.display = 'none';
-    if (adminPhotoBadgeBtn) adminPhotoBadgeBtn.style.display = 'none';
-    if (adminChangePhotoBtn) adminChangePhotoBtn.style.display = 'none';
   }
 
   // Set default date input
@@ -831,219 +809,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ==========================================================================
-  // Custódia Photo Display & Change Management (Admin Tool)
-  // ==========================================================================
-
-  function applyCustodiaDisplay(src, fitMode) {
-    if (monstranceImg) {
-      if (src) monstranceImg.src = src;
-      monstranceImg.classList.toggle('fit-ostensorio', fitMode === 'ostensorio');
-    }
-    if (sheetHeaderImg && src) {
-      sheetHeaderImg.src = src;
-    }
-    if (photoPreviewImg) {
-      if (src) photoPreviewImg.src = src;
-      photoPreviewImg.classList.toggle('fit-ostensorio', fitMode === 'ostensorio');
-    }
-  }
-
-  function initCustodiaSettings() {
-    const customImg = localStorage.getItem('custom_custodia_image');
-    const fitMode = localStorage.getItem('custodia_image_fit') || 'contain';
-    
-    if (fitMode === 'ostensorio') {
-      if (fitModeOstensorio) fitModeOstensorio.checked = true;
-    } else {
-      if (fitModeContain) fitModeContain.checked = true;
-    }
-
-    if (customImg) {
-      applyCustodiaDisplay(customImg, fitMode);
-    } else if (monstranceImg) {
-      applyCustodiaDisplay(monstranceImg.src, fitMode);
-    }
-  }
-
-  function openCustodiaPhotoModal() {
-    if (!custodiaPhotoModal) return;
-    selectedPhotoBase64 = null;
-    if (photoStatusText) photoStatusText.textContent = '';
-    
-    if (monstranceImg && photoPreviewImg) {
-      photoPreviewImg.src = monstranceImg.src;
-      const isOstensorio = monstranceImg.classList.contains('fit-ostensorio');
-      photoPreviewImg.classList.toggle('fit-ostensorio', isOstensorio);
-      if (fitModeOstensorio && fitModeContain) {
-        fitModeOstensorio.checked = isOstensorio;
-        fitModeContain.checked = !isOstensorio;
-      }
-    }
-    
-    custodiaPhotoModal.classList.add('active');
-  }
-
-  function closeCustodiaPhotoModal() {
-    if (!custodiaPhotoModal) return;
-    custodiaPhotoModal.classList.remove('active');
-  }
-
-  if (adminPhotoBadgeBtn) {
-    adminPhotoBadgeBtn.addEventListener('click', openCustodiaPhotoModal);
-  }
-  if (adminChangePhotoBtn) {
-    adminChangePhotoBtn.addEventListener('click', openCustodiaPhotoModal);
-  }
-  if (closePhotoModalBtn) {
-    closePhotoModalBtn.addEventListener('click', closeCustodiaPhotoModal);
-  }
-  if (cancelPhotoModalBtn) {
-    cancelPhotoModalBtn.addEventListener('click', closeCustodiaPhotoModal);
-  }
-
-  // Modal Fit Radio Live Preview
-  if (fitModeContain) {
-    fitModeContain.addEventListener('change', () => {
-      if (photoPreviewImg) photoPreviewImg.classList.remove('fit-ostensorio');
-    });
-  }
-  if (fitModeOstensorio) {
-    fitModeOstensorio.addEventListener('change', () => {
-      if (photoPreviewImg) photoPreviewImg.classList.add('fit-ostensorio');
-    });
-  }
-
-  // File Picker Trigger & Drag/Drop
-  if (photoDropzone && custodiaFileInput) {
-    photoDropzone.addEventListener('click', () => {
-      custodiaFileInput.click();
-    });
-
-    photoDropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      photoDropzone.classList.add('dragover');
-    });
-    photoDropzone.addEventListener('dragleave', () => {
-      photoDropzone.classList.remove('dragover');
-    });
-    photoDropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      photoDropzone.classList.remove('dragover');
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        handleCustodiaFile(e.dataTransfer.files[0]);
-      }
-    });
-
-    custodiaFileInput.addEventListener('change', (e) => {
-      if (e.target.files && e.target.files[0]) {
-        handleCustodiaFile(e.target.files[0]);
-      }
-    });
-  }
-
-  function handleCustodiaFile(file) {
-    if (!file.type.startsWith('image/')) {
-      alert('Por favor, selecione um arquivo de imagem válido (JPG, PNG ou WEBP).');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      selectedPhotoBase64 = e.target.result;
-      if (photoPreviewImg) photoPreviewImg.src = selectedPhotoBase64;
-      if (photoStatusText) {
-        photoStatusText.textContent = `Foto carregada: ${file.name}`;
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // Save Photo Button
-  if (savePhotoModalBtn) {
-    savePhotoModalBtn.addEventListener('click', async () => {
-      const selectedFit = fitModeOstensorio && fitModeOstensorio.checked ? 'ostensorio' : 'contain';
-      savePhotoModalBtn.disabled = true;
-      savePhotoModalBtn.textContent = 'Salvando...';
-
-      try {
-        if (selectedPhotoBase64) {
-          await fetch('api.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'upload_custodia',
-              image_data: selectedPhotoBase64,
-              fit_mode: selectedFit
-            })
-          });
-
-          localStorage.setItem('custom_custodia_image', selectedPhotoBase64);
-          localStorage.setItem('custodia_image_fit', selectedFit);
-          applyCustodiaDisplay(selectedPhotoBase64, selectedFit);
-        } else {
-          localStorage.setItem('custodia_image_fit', selectedFit);
-          applyCustodiaDisplay(monstranceImg ? monstranceImg.src : null, selectedFit);
-
-          await fetch('api.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'upload_custodia',
-              fit_mode: selectedFit
-            })
-          });
-        }
-
-        closeCustodiaPhotoModal();
-        alert('✨ Foto da Custódia e enquadramento salvos com sucesso!');
-      } catch (err) {
-        console.warn('Salvando foto localmente:', err);
-        if (selectedPhotoBase64) {
-          localStorage.setItem('custom_custodia_image', selectedPhotoBase64);
-        }
-        localStorage.setItem('custodia_image_fit', selectedFit);
-        applyCustodiaDisplay(selectedPhotoBase64 || (monstranceImg ? monstranceImg.src : null), selectedFit);
-        closeCustodiaPhotoModal();
-        alert('✨ Foto da Custódia e enquadramento salvos!');
-      } finally {
-        savePhotoModalBtn.disabled = false;
-        savePhotoModalBtn.textContent = '💾 Salvar Foto';
-      }
-    });
-  }
-
-  // Reset Photo Original Button
-  if (resetPhotoOriginalBtn) {
-    resetPhotoOriginalBtn.addEventListener('click', async () => {
-      if (!confirm('Deseja realmente restaurar a foto original da Custódia?')) return;
-      resetPhotoOriginalBtn.disabled = true;
-
-      try {
-        await fetch('api.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'reset_custodia' })
-        });
-      } catch (e) {
-        console.warn('Erro ao chamar reset na API:', e);
-      }
-
-      localStorage.removeItem('custom_custodia_image');
-      localStorage.removeItem('custodia_image_fit');
-      selectedPhotoBase64 = null;
-
-      const origSrc = `assets/custodia.jpg?v=${Date.now()}`;
-      applyCustodiaDisplay(origSrc, 'contain');
-      if (fitModeContain) fitModeContain.checked = true;
-      if (fitModeOstensorio) fitModeOstensorio.checked = false;
-
-      resetPhotoOriginalBtn.disabled = false;
-      closeCustodiaPhotoModal();
-      alert('✨ Foto original restaurada com sucesso!');
-    });
-  }
-
   // Initial Load
-  initCustodiaSettings();
   loadSchedule(currentDate);
 });
