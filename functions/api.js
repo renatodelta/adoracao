@@ -194,6 +194,8 @@ export async function onRequest(context) {
         await saveData(date, data);
         return new Response(JSON.stringify({ status: 'success', message: 'Escala salva com sucesso!', data }), { headers: CORS_HEADERS });
       }
+    }
+
     if (action === 'upload_custodia') {
       const imgData = body.image_data;
       const fitMode = body.fit_mode || 'contain';
