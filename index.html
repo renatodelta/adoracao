@@ -100,20 +100,17 @@
       </button>
     </section>
 
-    <!-- Sacred Intentions Live Ticker Bar (Faixa de Preces e Intenções) -->
+    <!-- Sacred Intentions Live Ticker Bar (Faixa de Preces e Intenções dos Adoradores) -->
     <section class="intentions-ticker-bar" id="intentionsTickerBar">
       <div class="ticker-badge" id="tickerBadge">
         <span class="ticker-icon">🕊️</span>
-        <span class="ticker-title">Intenções da Adoração:</span>
+        <span class="ticker-title">Intenções dos Adoradores:</span>
       </div>
-      <div class="ticker-track-wrapper" id="tickerTrackWrapper" title="Clique para ler todos os pedidos de oração da comunidade">
+      <div class="ticker-track-wrapper" id="tickerTrackWrapper" title="Clique para ler as intenções dos adoradores inscritos">
         <div class="ticker-track" id="tickerTrack">
           <!-- Populated dynamically via JS -->
         </div>
       </div>
-      <button class="ticker-add-btn" id="tickerAddBtn" title="Deixar meu pedido de oração para a adoração">
-        ➕ Pedido
-      </button>
     </section>
 
     <!-- Controls & Actions -->
@@ -123,8 +120,8 @@
           <label for="adoracaoDate">📅 Data da Adoração:</label>
           <input type="date" id="adoracaoDate">
         </div>
-        <button id="viewIntentionsBtn" class="btn btn-mural" title="Ver Pedidos e Intenções de Oração">
-          🙏 Pedidos de Oração
+        <button id="viewIntentionsBtn" class="btn btn-mural" title="Ver Mural de Intenções dos Adoradores">
+          📜 Mural de Intenções
         </button>
       </div>
 
@@ -194,19 +191,23 @@
           </p>
 
           <div class="form-group">
-            <label for="adorerName">Nome *</label>
+            <label for="adorerName">Seu Nome *</label>
             <input type="text" id="adorerName" placeholder="Ex: Maria da Silva" required autocomplete="name">
           </div>
 
-          <div class="form-group">
-            <label for="adorerIntention">Intenção de Oração (Opcional)</label>
-            <textarea id="adorerIntention" rows="2"
-              placeholder="Ex: Pelas famílias, pelos doentes da nossa comunidade..."></textarea>
+          <div class="form-group booking-intention-box">
+            <label for="adorerIntention" class="booking-intention-label">
+              <span>🙏 Seu Pedido de Oração / Intenção</span>
+              <span class="badge-optional">Opcional</span>
+            </label>
+            <p class="form-subtext">Deixe a intenção que você levará ao Santíssimo neste horário. Ela será exibida no mural de orações.</p>
+            <textarea id="adorerIntention" rows="3"
+              placeholder="Ex: Pela saúde da minha família, pela conversão, por uma graça urgente..."></textarea>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
-          <button type="submit" class="btn btn-gold"> Confirmar Agendamento</button>
+          <button type="submit" class="btn btn-gold">Confirmar Inscrição e Pedido</button>
         </div>
       </form>
     </div>
@@ -243,7 +244,7 @@
   <div class="modal-overlay" id="intentionsModal">
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
-        <h3>🙏 Pedidos de Oração</h3>
+        <h3>🙏 Mural de Intenções dos Adoradores</h3>
         <button class="close-btn" id="closeIntentionsModalBtn">&times;</button>
       </div>
       <div class="modal-body">
@@ -251,14 +252,14 @@
         <div id="bookingSuccessNotice" class="booking-success-banner" style="display: none;">
           <div class="success-icon">✨</div>
           <div class="success-text">
-            <strong>Inscrição Confirmada!</strong>
+            <strong>Inscrição e Pedido Confirmados!</strong>
             <p>Deus abençoe sua disponibilidade! Durante a sua hora de adoração, coloque em suas preces estas intenções
-              e pedidos de oração da nossa comunidade:</p>
+              dos adoradores da nossa comunidade:</p>
           </div>
         </div>
 
         <div class="intentions-intro">
-          <p class="intentions-subtitle">Intenções para <strong id="intentionsDateLabel"></strong>:</p>
+          <p class="intentions-subtitle">Intenções dos adoradores para <strong id="intentionsDateLabel"></strong>:</p>
         </div>
 
         <!-- Lista dinâmica de intenções -->
@@ -266,22 +267,9 @@
           <!-- Populated by JS -->
         </div>
 
-        <!-- Formulário para incluir novo pedido de oração diretamente -->
-        <div class="add-intention-box">
-          <h4 class="add-intention-title">🕊️ Deixar um Pedido de Oração</h4>
-          <form id="addGeneralIntentionForm">
-            <div class="form-group-compact">
-              <input type="text" id="generalIntentionName" placeholder="Seu Nome (opcional / anônimo)"
-                class="form-input-sm">
-            </div>
-            <div class="form-group-compact">
-              <textarea id="generalIntentionText" rows="2"
-                placeholder="Escreva aqui sua intenção ou pedido de oração..." required
-                class="form-input-sm"></textarea>
-            </div>
-            <button type="submit" class="btn btn-gold btn-sm" style="width: 100%; margin-top: 6px;">➕ Registrar Pedido
-              de Oração</button>
-          </form>
+        <div class="intentions-enroll-hint">
+          <span class="hint-icon">💡</span>
+          <p>Deseja colocar seu pedido de oração diante do Santíssimo? <strong>Inscreva-se em um dos horários de adoração</strong> na página inicial.</p>
         </div>
       </div>
       <div class="modal-footer" style="justify-content: space-between;">

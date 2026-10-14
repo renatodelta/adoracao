@@ -206,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="slot-actions">
           ${!isClosing ? `
-            <button class="btn btn-gold btn-sm open-book-btn" data-time="${slot.time}">
-              ➕ Inscrever Horário
+            <button class="btn btn-gold btn-sm open-book-btn" data-time="${slot.time}" title="Inscrever-se neste horário e registrar seu pedido de oração">
+              ➕ Inscrever / Pedido de Oração
             </button>
           ` : ''}
         </div>
@@ -619,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="empty-intentions-card">
           <div class="empty-icon">🕊️</div>
           <p class="empty-title">Nenhum pedido de oração registrado ainda para este dia.</p>
-          <p class="empty-desc">Seja o primeiro a colocar suas intenções diante de Jesus no Santíssimo Sacramento!</p>
+          <p class="empty-desc">Inscreva-se em um dos horários acima para colocar suas preces diante do Santíssimo Sacramento!</p>
         </div>
       `;
       return;
@@ -800,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="ticker-item">
           <span class="ticker-item-dot">✦</span>
           <span class="ticker-item-name">Capela de São José:</span>
-          <span class="ticker-item-text">Coloque suas preces e intenções aos pés de Jesus no Santíssimo Sacramento • Clique para registrar</span>
+          <span class="ticker-item-text">Coloque suas preces e intenções aos pés de Jesus no Santíssimo Sacramento ao se inscrever em um horário</span>
         </span>
         <span class="ticker-item">
           <span class="ticker-item-dot">✦</span>
