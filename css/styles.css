@@ -193,21 +193,60 @@ body::before {
 }
 
 .monstrance-img {
-  width: 135px;
-  height: 135px;
-  object-fit: cover;
-  object-position: center 48%;
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, rgba(45, 5, 10, 0.95) 75%);
+  padding: 4px;
   border-radius: 50%;
   border: 4px solid var(--gold-primary);
   box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 10px rgba(0, 0, 0, 0.4);
   position: relative;
   z-index: 2;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
+  display: block;
+}
+
+.monstrance-img.fit-ostensorio {
+  object-fit: cover;
+  object-position: center 25%;
+  background: none;
+  padding: 0;
 }
 
 .monstrance-img:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   box-shadow: 0 0 40px rgba(251, 245, 183, 0.8), 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+/* Admin Quick Photo Change Badge on Header */
+.admin-photo-badge {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: linear-gradient(135deg, var(--gold-hover), var(--gold-dark));
+  color: #37060c;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--gold-bright);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.admin-photo-badge:hover {
+  transform: translateX(-50%) scale(1.08);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.7);
+  background: linear-gradient(135deg, #ffffff, var(--gold-hover));
 }
 
 /* Header Titles inspired by Photo */
@@ -1319,4 +1358,329 @@ body::before {
   padding: 8px 14px;
   font-size: 13px;
 }
+
+/* Printable Sheet Header Image */
+.sheet-header-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background: #ffffff;
+  border-radius: 50%;
+  border: 2px solid var(--sacred-burgundy);
+  padding: 3px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Sacred Intentions Live Ticker Bar (Faixa de Preces e Intenções)
+   ========================================================================== */
+
+.intentions-ticker-bar {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #37060c 0%, #5c131d 30%, #470b13 70%, #37060c 100%);
+  border: 1.5px solid var(--gold-primary);
+  border-radius: var(--radius-pill);
+  margin-top: -14px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 18px rgba(60, 10, 15, 0.2), 0 0 15px rgba(212, 175, 55, 0.25);
+  position: relative;
+  overflow: hidden;
+  height: 48px;
+  z-index: 5;
+}
+
+.intentions-ticker-bar::before,
+.intentions-ticker-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.intentions-ticker-bar::before {
+  left: 0;
+  background: linear-gradient(90deg, #37060c 0%, transparent 100%);
+}
+
+.intentions-ticker-bar::after {
+  right: 0;
+  background: linear-gradient(-90deg, #37060c 0%, transparent 100%);
+}
+
+.ticker-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #d4af37 0%, #b38728 50%, #8c5222 100%);
+  color: #2b060b;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 0 16px;
+  height: 100%;
+  white-space: nowrap;
+  z-index: 5;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.35);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.ticker-badge .ticker-icon {
+  font-size: 17px;
+  animation: gentlePulse 2.5s infinite ease-in-out;
+}
+
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+.ticker-track-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  white-space: nowrap;
+  will-change: transform;
+  animation: tickerSlide 40s linear infinite;
+  padding-left: 20px;
+}
+
+.ticker-track-wrapper:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes tickerSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff9ea;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.ticker-item:hover {
+  color: var(--gold-bright);
+}
+
+.ticker-item-dot {
+  color: var(--gold-primary);
+  font-size: 14px;
+}
+
+.ticker-item-name {
+  color: var(--gold-bright);
+  font-weight: 700;
+  font-family: var(--font-serif);
+  letter-spacing: 0.4px;
+}
+
+.ticker-item-text {
+  font-style: italic;
+  font-family: var(--font-quote);
+  font-size: 16px;
+  color: #fef5db;
+}
+
+.ticker-add-btn {
+  background: rgba(212, 175, 55, 0.18);
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-bright);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  margin-right: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  z-index: 5;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ticker-add-btn:hover {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-hover));
+  color: #2b060b;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+/* ==========================================================================
+   Custódia Photo Change Modal
+   ========================================================================== */
+
+.photo-upload-dropzone {
+  border: 2px dashed var(--gold-border);
+  background: var(--gold-light-bg);
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.photo-upload-dropzone:hover,
+.photo-upload-dropzone.dragover {
+  border-color: var(--gold-primary);
+  background: #fdf6e4;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.photo-dropzone-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+
+.photo-dropzone-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.photo-dropzone-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.photo-preview-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--sacred-burgundy-dark), var(--sacred-burgundy));
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gold-dark);
+}
+
+.photo-preview-box {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3.5px solid var(--gold-primary);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  overflow: hidden;
+  position: relative;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, rgba(45, 5, 10, 0.95) 75%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+  transition: all 0.3s ease;
+}
+
+.photo-preview-img.fit-ostensorio {
+  object-fit: cover;
+  object-position: center 25%;
+  padding: 0;
+}
+
+.photo-fit-options {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.photo-fit-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sacred-burgundy);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.photo-fit-radios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.photo-fit-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.photo-fit-label input[type="radio"] {
+  accent-color: var(--gold-primary);
+  margin-top: 3px;
+}
+
+.photo-fit-desc {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  .intentions-ticker-bar {
+    height: 42px;
+    margin-top: -10px;
+    margin-bottom: 18px;
+  }
+  .ticker-badge .ticker-title {
+    display: none;
+  }
+  .ticker-badge {
+    padding: 0 10px;
+  }
+  .ticker-item {
+    font-size: 12px;
+  }
+  .ticker-item-text {
+    font-size: 13.5px;
+  }
+  .ticker-add-btn {
+    padding: 4px 8px;
+    font-size: 10.5px;
+    margin-right: 6px;
+  }
+  .photo-preview-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
 

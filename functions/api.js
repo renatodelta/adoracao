@@ -194,7 +194,32 @@ export async function onRequest(context) {
         await saveData(date, data);
         return new Response(JSON.stringify({ status: 'success', message: 'Escala salva com sucesso!', data }), { headers: CORS_HEADERS });
       }
-      return new Response(JSON.stringify({ status: 'error', message: 'Dados inválidos.' }), { headers: CORS_HEADERS });
+    if (action === 'upload_custodia') {
+      const imgData = body.image_data;
+      const fitMode = body.fit_mode || 'contain';
+      if (kv && imgData) {
+        await kv.put('custodia_image_custom', imgData);
+        await kv.put('custodia_fit_mode', fitMode);
+      }
+      return new Response(JSON.stringify({
+        status: 'success',
+        message: 'Foto da Custódia atualizada com sucesso!',
+        custodia_fit: fitMode,
+        custodia_version: Date.now()
+      }), { headers: CORS_HEADERS });
+    }
+
+    if (action === 'reset_custodia') {
+      if (kv) {
+        await kv.delete('custodia_image_custom');
+        await kv.delete('custodia_fit_mode');
+      }
+      return new Response(JSON.stringify({
+        status: 'success',
+        message: 'Foto original da Custódia restaurada com sucesso!',
+        custodia_fit: 'contain',
+        custodia_version: Date.now()
+      }), { headers: CORS_HEADERS });
     }
 
     return new Response(JSON.stringify({ status: 'error', message: 'Ação desconhecida.' }), { headers: CORS_HEADERS });

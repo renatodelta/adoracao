@@ -46,9 +46,12 @@
         </svg>
       </div>
 
-      <div class="monstrance-container">
+      <div class="monstrance-container" id="monstranceContainer">
         <div class="monstrance-halo"></div>
-        <img src="assets/custodia.jpg" alt="Santíssimo Sacramento - Custódia de Adoração" class="monstrance-img">
+        <img src="assets/custodia.jpg" alt="Santíssimo Sacramento - Custódia de Adoração" class="monstrance-img" id="monstranceImg">
+        <button id="adminPhotoBadgeBtn" class="admin-photo-badge" style="display: none;" title="Trocar foto da Custódia">
+          📷 Trocar Foto
+        </button>
       </div>
 
       <h1 class="header-title">Quinta-feira de Adoração</h1>
@@ -97,6 +100,22 @@
       </button>
     </section>
 
+    <!-- Sacred Intentions Live Ticker Bar (Faixa de Preces e Intenções) -->
+    <section class="intentions-ticker-bar" id="intentionsTickerBar">
+      <div class="ticker-badge" id="tickerBadge">
+        <span class="ticker-icon">🕊️</span>
+        <span class="ticker-title">Intenções da Adoração:</span>
+      </div>
+      <div class="ticker-track-wrapper" id="tickerTrackWrapper" title="Clique para ler todos os pedidos de oração da comunidade">
+        <div class="ticker-track" id="tickerTrack">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+      <button class="ticker-add-btn" id="tickerAddBtn" title="Deixar meu pedido de oração para a adoração">
+        ➕ Pedido
+      </button>
+    </section>
+
     <!-- Controls & Actions -->
     <section class="control-bar">
       <div class="control-left">
@@ -110,6 +129,9 @@
       </div>
 
       <div class="action-buttons" id="adminActionButtons" style="display: none;">
+        <button id="adminChangePhotoBtn" class="btn btn-outline" style="border-color: var(--gold-primary); color: #fff; background: rgba(212, 175, 55, 0.15);" title="Trocar foto da Custódia">
+          📷 Trocar Foto da Custódia
+        </button>
         <button id="shareWpBtn" class="btn btn-whatsapp" title="Compartilhar lista no WhatsApp">
           📱 Enviar no WhatsApp
         </button>
@@ -272,7 +294,7 @@
   <!-- Printable Sheet View -->
   <div class="printable-sheet" id="printableSheet">
     <div style="text-align: center; border-bottom: 2px solid #5c131d; padding-bottom: 12px; margin-bottom: 15px;">
-      <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img" style="max-height: 90px; border-radius: 50%;">
+      <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img" id="sheetHeaderImg">
       <h2
         style="font-family: 'Cinzel', serif; font-size: 22px; color: #5c131d; margin-top: 6px; text-transform: uppercase;">
         Quinta-feira de Adoração</h2>
@@ -292,6 +314,70 @@
         <!-- Rows populated dynamically -->
       </tbody>
     </table>
+  </div>
+
+  <!-- Custódia Photo Change Modal (Admin) -->
+  <div class="modal" id="custodiaPhotoModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">📷 Trocar Foto da Custódia</h3>
+          <p class="modal-subtitle">Personalize a imagem sagrada do Santíssimo Sacramento</p>
+        </div>
+        <button type="button" class="btn-close" id="closePhotoModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="photo-preview-section">
+          <div class="photo-preview-box">
+            <img src="assets/custodia.jpg" alt="Prévia da Custódia" class="photo-preview-img" id="photoPreviewImg">
+          </div>
+          <div style="color: #fff; font-size: 13px;">
+            <strong style="color: var(--gold-bright); display: block; margin-bottom: 4px;">Prévia no Cabeçalho</strong>
+            <p style="color: rgba(255,255,255,0.85); font-size: 12px; margin: 0; line-height: 1.4;">Veja como a imagem será apresentada aos fiéis no topo da página.</p>
+          </div>
+        </div>
+
+        <div class="photo-upload-dropzone" id="photoDropzone">
+          <input type="file" id="custodiaFileInput" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;">
+          <div class="photo-dropzone-icon">📁</div>
+          <div class="photo-dropzone-text">Clique aqui para escolher nova foto</div>
+          <div class="photo-dropzone-sub">Suporta fotos do computador ou celular (JPG, PNG, WEBP)</div>
+        </div>
+
+        <div class="photo-fit-options">
+          <div class="photo-fit-title">Enquadramento da Imagem</div>
+          <div class="photo-fit-radios">
+            <label class="photo-fit-label">
+              <input type="radio" name="photoFitMode" value="contain" checked id="fitModeContain">
+              <div>
+                <strong>Foto Completa (Sem cortes)</strong>
+                <span class="photo-fit-desc">A Custódia inteira cabe harmoniosamente com fundo sagrado suave</span>
+              </div>
+            </label>
+            <label class="photo-fit-label">
+              <input type="radio" name="photoFitMode" value="ostensorio" id="fitModeOstensorio">
+              <div>
+                <strong>Foco no Ostensório</strong>
+                <span class="photo-fit-desc">Centraliza o sol dourado e a sagrada hóstia preenchendo o círculo</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <button type="button" class="btn btn-outline btn-sm" id="resetPhotoOriginalBtn" style="color: var(--text-muted); border-color: #d1d5db;" title="Restaurar a foto original da paróquia">
+            🔄 Foto Original
+          </button>
+          <span id="photoStatusText" style="font-size: 12px; color: var(--sacred-burgundy); font-weight: 600;"></span>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="justify-content: flex-end; gap: 10px;">
+        <button type="button" class="btn btn-outline" id="cancelPhotoModalBtn">Cancelar</button>
+        <button type="button" class="btn btn-gold" id="savePhotoModalBtn">💾 Salvar Foto</button>
+      </div>
+    </div>
   </div>
 
   <script src="js/app.js"></script>

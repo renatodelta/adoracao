@@ -62,6 +62,12 @@ if ($method === 'GET') {
         ];
         file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
+    $configPath = $dataDir . '/site_config.json';
+    $siteConfig = file_exists($configPath) ? json_decode(file_get_contents($configPath), true) : [];
+    $custodiaFile = __DIR__ . '/assets/custodia.jpg';
+    $custodiaTime = file_exists($custodiaFile) ? filemtime($custodiaFile) : time();
+    $data['custodia_version'] = $custodiaTime;
+    $data['custodia_fit'] = isset($siteConfig['custodia_fit']) ? $siteConfig['custodia_fit'] : 'contain';
 
     echo json_encode(["status" => "success", "data" => $data]);
     exit;
@@ -206,6 +212,80 @@ if ($method === 'POST') {
         } else {
             echo json_encode(["status" => "error", "message" => "Dados inválidos."]);
         }
+        exit;
+    }
+
+    if ($action === 'upload_custodia') {
+        $saved = false;
+        $targetPath = __DIR__ . '/assets/custodia.jpg';
+        $backupPath = __DIR__ . '/assets/custodia_backup.jpg';
+
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES['photo']['tmp_name'];
+            $imgInfo = @getimagesize($tmpName);
+            if ($imgInfo !== false) {
+                if (!file_exists($backupPath) && file_exists($targetPath)) {
+                    copy($targetPath, $backupPath);
+                }
+                if (move_uploaded_file($tmpName, $targetPath)) {
+                    $saved = true;
+                }
+            }
+        } elseif (isset($input['image_data']) && !empty($input['image_data'])) {
+            $raw = $input['image_data'];
+            if (preg_match('/^data:image\/(\w+);base64,/', $raw, $matches)) {
+                $raw = substr($raw, strpos($raw, ',') + 1);
+                $decoded = base64_decode($raw);
+                if ($decoded !== false) {
+                    if (!file_exists($backupPath) && file_exists($targetPath)) {
+                        copy($targetPath, $backupPath);
+                    }
+                    if (file_put_contents($targetPath, $decoded)) {
+                        $saved = true;
+                    }
+                }
+            }
+        }
+
+        if ($saved) {
+            $fitMode = isset($input['fit_mode']) ? $input['fit_mode'] : 'contain';
+            $configPath = $dataDir . '/site_config.json';
+            $siteConfig = file_exists($configPath) ? json_decode(file_get_contents($configPath), true) : [];
+            $siteConfig['custodia_fit'] = $fitMode;
+            $siteConfig['custodia_updated_at'] = time();
+            file_put_contents($configPath, json_encode($siteConfig, JSON_PRETTY_PRINT));
+
+            echo json_encode([
+                "status" => "success",
+                "message" => "Foto da Custódia atualizada com sucesso!",
+                "custodia_version" => time(),
+                "custodia_fit" => $fitMode
+            ]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Não foi possível salvar a imagem da Custódia."]);
+        }
+        exit;
+    }
+
+    if ($action === 'reset_custodia') {
+        $targetPath = __DIR__ . '/assets/custodia.jpg';
+        $backupPath = __DIR__ . '/assets/custodia_backup.jpg';
+        if (file_exists($backupPath)) {
+            copy($backupPath, $targetPath);
+        }
+        $configPath = $dataDir . '/site_config.json';
+        if (file_exists($configPath)) {
+            $siteConfig = json_decode(file_get_contents($configPath), true);
+            unset($siteConfig['custodia_fit']);
+            $siteConfig['custodia_updated_at'] = time();
+            file_put_contents($configPath, json_encode($siteConfig, JSON_PRETTY_PRINT));
+        }
+        echo json_encode([
+            "status" => "success",
+            "message" => "Foto original da Custódia restaurada com sucesso!",
+            "custodia_version" => time(),
+            "custodia_fit" => "contain"
+        ]);
         exit;
     }
 
