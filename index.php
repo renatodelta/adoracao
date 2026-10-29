@@ -253,8 +253,7 @@
           <p>Deseja colocar seu pedido de oração diante do Santíssimo? <strong>Inscreva-se em um dos horários de adoração</strong> na página inicial.</p>
         </div>
       </div>
-      <div class="modal-footer" style="justify-content: space-between;">
-        <button type="button" class="btn btn-outline" id="copyIntentionsBtn">📋 Copiar Intenções</button>
+      <div class="modal-footer">
         <button type="button" class="btn btn-gold" id="closeIntentionsFooterBtn">Fechar</button>
       </div>
     </div>

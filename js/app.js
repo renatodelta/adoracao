@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const addGeneralIntentionForm = document.getElementById('addGeneralIntentionForm');
   const generalIntentionName = document.getElementById('generalIntentionName');
   const generalIntentionText = document.getElementById('generalIntentionText');
-  const copyIntentionsBtn = document.getElementById('copyIntentionsBtn');
 
   // Printable Table Element
   const printTableBody = document.getElementById('printTableBody');
@@ -662,47 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Copy Intentions Handler
-  if (copyIntentionsBtn) {
-    copyIntentionsBtn.addEventListener('click', () => {
-      const allIntentions = [];
-      if (scheduleData && Array.isArray(scheduleData.slots)) {
-        scheduleData.slots.forEach(slot => {
-          if (Array.isArray(slot.adorers)) {
-            slot.adorers.forEach(adorer => {
-              if (adorer.intention && adorer.intention.trim() !== '') {
-                allIntentions.push(`• *${adorer.name}* (${slot.time}h): "${adorer.intention.trim()}"`);
-              }
-            });
-          }
-        });
-      }
-      if (scheduleData && Array.isArray(scheduleData.general_intentions)) {
-        scheduleData.general_intentions.forEach(item => {
-          if (item.intention && item.intention.trim() !== '') {
-            allIntentions.push(`• *${item.name}*: "${item.intention.trim()}"`);
-          }
-        });
-      }
 
-      if (allIntentions.length === 0) {
-        alert('Nenhuma intenção cadastrada para copiar.');
-        return;
-      }
-
-      const formattedText = `🙏 *Pedidos de Oração — Quinta-feira de Adoração*\n📅 *Data:* ${formatDateBR(currentDate)}\n\n${allIntentions.join('\n\n')}\n\n"Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!"`;
-
-      navigator.clipboard.writeText(formattedText).then(() => {
-        const origText = copyIntentionsBtn.textContent;
-        copyIntentionsBtn.textContent = '✅ Copiado!';
-        setTimeout(() => {
-          copyIntentionsBtn.textContent = origText;
-        }, 2000);
-      }).catch(() => {
-        alert('Não foi possível copiar automaticamente.');
-      });
-    });
-  }
 
   function saveLocalStorageGeneralIntention(dateStr, name, intention) {
     const data = getLocalStorageData(dateStr);
