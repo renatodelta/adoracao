@@ -452,12 +452,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Helpers
   function getNextThursdayDateStr() {
     const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 is Sun, 4 is Thu
-    const distanceToThu = ((4 - dayOfWeek + 7) % 7) || 7;
-    const nextThu = new Date(today.getFullYear(), today.getMonth(), today.getDate() + distanceToThu);
-    const year = nextThu.getFullYear();
-    const month = String(nextThu.getMonth() + 1).padStart(2, '0');
-    const day = String(nextThu.getDate()).padStart(2, '0');
+    const dayOfWeek = today.getDay(); // 0: Dom, 1: Seg, 2: Ter, 3: Qua, 4: Qui, 5: Sex, 6: Sáb
+    // Se for quinta (4), distanceToThu é 0 (permanece na quinta atual o dia todo).
+    // A partir da 00:00 de sexta (5), distanceToThu é 6 (vai para a próxima quinta).
+    const distanceToThu = (4 - dayOfWeek + 7) % 7;
+    const targetThu = new Date(today.getFullYear(), today.getMonth(), today.getDate() + distanceToThu);
+    const year = targetThu.getFullYear();
+    const month = String(targetThu.getMonth() + 1).padStart(2, '0');
+    const day = String(targetThu.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
