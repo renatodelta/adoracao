@@ -454,10 +454,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function getNextThursdayDateStr() {
     const today = new Date();
     const dayOfWeek = today.getDay(); // 0 is Sun, 4 is Thu
-    const distanceToThu = (4 - dayOfWeek + 7) % 7;
-    const nextThu = new Date(today);
-    nextThu.setDate(today.getDate() + (distanceToThu === 0 ? 0 : distanceToThu));
-    return nextThu.toISOString().split('T')[0];
+    const distanceToThu = ((4 - dayOfWeek + 7) % 7) || 7;
+    const nextThu = new Date(today.getFullYear(), today.getMonth(), today.getDate() + distanceToThu);
+    const year = nextThu.getFullYear();
+    const month = String(nextThu.getMonth() + 1).padStart(2, '0');
+    const day = String(nextThu.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   function formatDateBR(dateStr) {
