@@ -20,7 +20,7 @@ function getFilePath($date, $type = 'adoracao') {
     if (empty($cleanDate)) {
         $cleanDate = ($type === 'vigilia') ? '2026-11-21' : date('Y-m-d');
     }
-    $prefix = ($type === 'vigilia') ? 'vigilia_cristo_rei_' : 'adoracao_';
+    $prefix = ($type === 'vigilia') ? 'vigilia_cristo_rei_' : (($type === 'sjb') ? 'adoracao_sjb_' : 'adoracao_');
     return $dataDir . '/' . $prefix . $cleanDate . '.json';
 }
 
@@ -92,7 +92,7 @@ if ($method === 'GET') {
         $data = [
             "date" => $date,
             "title" => $isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
-            "community" => "Comunidade do Formoso",
+            "community" => ($type === 'sjb') ? "São José do Barreiro" : "Comunidade do Formoso",
             "quote_text" => $isVigilia ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!" : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
             "quote_author" => $isVigilia ? "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico" : "São Boaventura",
             "slots" => getDefaultSlots($type),
@@ -142,7 +142,7 @@ if ($method === 'POST') {
         $data = [
             "date" => $date,
             "title" => $isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
-            "community" => "Comunidade do Formoso",
+            "community" => ($type === 'sjb') ? "São José do Barreiro" : "Comunidade do Formoso",
             "quote_text" => $defaultQuoteText,
             "quote_author" => $defaultQuoteAuthor,
             "slots" => getDefaultSlots($type),

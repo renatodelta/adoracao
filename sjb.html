@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Adoração ao Santíssimo — Paróquia São José (São José do Barreiro)</title>
+  <meta name="description"
+    content="Escala de Horários de Adoração ao Santíssimo Sacramento — Paróquia São José (São José do Barreiro - SP)">
+  <meta name="theme-color" content="#153027">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Adoração SJB">
+  <link rel="apple-touch-icon" href="assets/custodia.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/sjb.css">
+  <link rel="icon" href="assets/custodia2.jpg" type="image/jpeg">
+</head>
+
+<body>
+
+  <!-- Compact Sanctuary Top Bar -->
+  <header class="sjb-topbar">
+    <div class="sjb-topbar-inner">
+      <div class="sjb-brand">
+        <div class="sjb-avatar-wrap">
+          <img src="assets/custodia.jpg" alt="Santíssimo Sacramento" class="sjb-avatar" id="monstranceImg">
+        </div>
+        <div class="sjb-brand-text">
+          <div class="sjb-eyebrow">⛪ Paróquia São José · Matriz de 1881</div>
+          <h1 class="sjb-title">Quinta-feira de Adoração</h1>
+          <p class="sjb-location">São José do Barreiro — SP · Das 05h às 19h</p>
+        </div>
+      </div>
+
+      <div class="sjb-topbar-controls">
+        <div id="adminHeaderBadge" style="display: none;" class="sjb-admin-pill">🔑 Modo Administrador</div>
+
+        <div class="sjb-date-pill">
+          <label for="adoracaoDate">📅</label>
+          <input type="date" id="adoracaoDate" aria-label="Data da Adoração">
+        </div>
+
+        <div class="sjb-coverage-pill" title="Cobertura dos horários">
+          <div class="sjb-coverage-top">
+            <span class="sjb-coverage-label">Cobertura</span>
+            <strong id="statsCount">0/14</strong>
+          </div>
+          <div class="sjb-progress-track">
+            <div class="sjb-progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Toolbar (visible only with ?admin=true) -->
+    <div class="sjb-admin-bar" id="adminActionButtons" style="display: none;">
+      <button id="shareWpBtn" class="sjb-btn sjb-btn-whatsapp">📱 Enviar Escala no WhatsApp</button>
+      <button id="editQuoteBtn" class="sjb-btn sjb-btn-outline-light">✏️ Editar Frase</button>
+      <button id="resetBtn" class="sjb-btn sjb-btn-danger-outline">🔄 Restaurar Horários</button>
+    </div>
+  </header>
+
+  <!-- Mobile Tab Switcher -->
+  <nav class="sjb-mobile-tabs" aria-label="Navegação">
+    <button type="button" class="sjb-tab-btn active" data-tab="schedule">🕒 Horários</button>
+    <button type="button" class="sjb-tab-btn" data-tab="intentions">🙏 Livro de Intenções <span class="sjb-tab-count" id="intentionsCountBadge">0</span></button>
+  </nav>
+
+  <!-- Main 2-Column Split Workspace -->
+  <main class="sjb-workspace">
+
+    <!-- LEFT COLUMN: Inspiration + Live Prayer Book -->
+    <aside class="sjb-sidebar sjb-panel" id="panelIntentions">
+
+      <!-- Quote Card -->
+      <section class="sjb-card sjb-quote-card">
+        <div class="sjb-quote-mark">“</div>
+        <p class="sjb-quote-text" id="quoteText">No silêncio da oficina e diante do Santíssimo Sacramento, São José nos ensina a guardar Jesus no coração.</p>
+        <span class="sjb-quote-author" id="quoteAuthor">— Paróquia São José · São José do Barreiro</span>
+      </section>
+
+      <!-- Always-Visible Prayer Book / Intentions -->
+      <section class="sjb-card sjb-prayer-book">
+        <div class="sjb-card-header">
+          <div>
+            <h2>🙏 Livro de Intenções</h2>
+            <p class="sjb-muted">Preces da comunidade para <strong id="intentionsDateLabel">esta quinta-feira</strong></p>
+          </div>
+        </div>
+
+        <div id="intentionsList" class="sjb-intentions-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <form id="addGeneralIntentionForm" class="sjb-intention-form">
+          <div class="sjb-form-title">Deixar uma intenção no altar</div>
+          <input type="text" id="generalIntentionName" placeholder="Seu nome (ou deixe em branco para Anônimo)">
+          <textarea id="generalIntentionText" rows="2" placeholder="Escreva seu pedido de oração..." required></textarea>
+          <button type="submit" class="sjb-btn sjb-btn-secondary sjb-btn-block">🕊️ Registrar Intenção</button>
+        </form>
+      </section>
+
+    </aside>
+
+    <!-- RIGHT COLUMN: Visual Slot Matrix + Inline Booking Drawer -->
+    <section class="sjb-main sjb-panel active" id="panelSchedule">
+
+      <!-- Alert Banner when hours are missing -->
+      <div id="alertBanner" class="sjb-alert-banner" style="display: none;"></div>
+
+      <!-- Filter Bar -->
+      <div class="sjb-filter-bar">
+        <div class="sjb-filter-group" role="tablist" aria-label="Filtrar horários">
+          <button type="button" class="sjb-filter-pill active" data-filter="all">Todos</button>
+          <button type="button" class="sjb-filter-pill" data-filter="empty">Precisa de Adorador</button>
+          <button type="button" class="sjb-filter-pill" data-filter="filled">Preenchidos</button>
+        </div>
+        <span class="sjb-helper-hint">Toque em um horário para ver detalhes ou se inscrever</span>
+      </div>
+
+      <!-- Visual Grid of Time Slots -->
+      <div class="sjb-slot-grid" id="slotsList">
+        <!-- Populated dynamically via JS -->
+      </div>
+
+      <!-- Inline Selected Slot Detail & Booking Panel -->
+      <section class="sjb-card sjb-detail-drawer" id="slotDetailPanel">
+        <div class="sjb-detail-empty" id="detailEmptyState">
+          <span class="sjb-detail-icon">🕯️</span>
+          <h3>Escolha um horário acima</h3>
+          <p>Clique em qualquer horário da grade para ver quem já está adorando ou confirmar a sua hora diante do Santíssimo.</p>
+        </div>
+
+        <div class="sjb-detail-active" id="detailActiveState" style="display: none;">
+          <div class="sjb-detail-header">
+            <div>
+              <span class="sjb-detail-eyebrow">Horário Selecionado</span>
+              <h3 class="sjb-detail-time" id="detailSlotTime">08:00</h3>
+            </div>
+            <span class="sjb-status-badge" id="detailSlotBadge">Vago</span>
+          </div>
+
+          <div class="sjb-detail-adorers" id="detailAdorersList">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Success Notice -->
+          <div id="bookingSuccessNotice" class="sjb-success-toast" style="display: none;">
+            ✨ <strong>Inscrição confirmada!</strong> Deus abençoe sua hora de adoração.
+          </div>
+
+          <!-- Inline Booking Form -->
+          <form id="bookingForm" class="sjb-booking-form">
+            <div class="sjb-form-row">
+              <div class="sjb-field">
+                <label for="adorerName">Seu Nome *</label>
+                <input type="text" id="adorerName" placeholder="Ex: Maria da Silva" required autocomplete="name">
+              </div>
+            </div>
+            <div class="sjb-field">
+              <label for="adorerIntention">Pedido de Oração / Intenção <span class="sjb-optional">(opcional)</span></label>
+              <textarea id="adorerIntention" rows="2" placeholder="Deixe uma intenção para ser rezada neste horário..."></textarea>
+            </div>
+            <button type="submit" class="sjb-btn sjb-btn-primary sjb-btn-block" id="bookingSubmitBtn">
+              ✅ Confirmar Adoração neste Horário
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </section>
+
+  </main>
+
+  <footer class="sjb-footer">
+    <p><strong>Paróquia São José</strong> — São José do Barreiro (SP) · Diocese de Lorena</p>
+    <p class="sjb-footer-sub">“Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!”</p>
+  </footer>
+
+  <!-- Modal Quote Edit Dialog (Admin Only) -->
+  <div class="modal-overlay" id="quoteModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Editar Frase de Oração</h3>
+        <button class="close-btn" id="closeQuoteModalBtn">&times;</button>
+      </div>
+      <form id="quoteForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="editQuoteText">Frase de Inspiração *</label>
+            <textarea id="editQuoteText" rows="3" required placeholder="Digite a frase inspiradora..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="editQuoteAuthor">Autor / Santo *</label>
+            <input type="text" id="editQuoteAuthor" required placeholder="Ex: São José">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="sjb-btn sjb-btn-outline" id="cancelQuoteModalBtn">Cancelar</button>
+          <button type="submit" class="sjb-btn sjb-btn-primary">Salvar Frase</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Printable Sheet View -->
+  <div class="printable-sheet" id="printableSheet">
+    <div style="text-align: center; border-bottom: 2px solid #153027; padding-bottom: 12px; margin-bottom: 15px;">
+      <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img">
+      <h2 style="font-family: 'Cinzel', serif; font-size: 22px; color: #153027; margin-top: 6px; text-transform: uppercase;">
+        Quinta-feira de Adoração</h2>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #224a3d;">
+        Paróquia São José — São José do Barreiro (SP)</p>
+      <p style="font-weight: bold; margin-top: 6px; font-size: 14px;">Data: <span id="printDateLabel"></span></p>
+    </div>
+
+    <table class="sheet-table">
+      <thead>
+        <tr>
+          <th style="width: 25%;">Horário</th>
+          <th style="width: 75%;">Adoradores Inscritos</th>
+        </tr>
+      </thead>
+      <tbody id="printTableBody"></tbody>
+    </table>
+  </div>
+
+  <script src="js/sjb.js"></script>
+</body>
+
+</html>

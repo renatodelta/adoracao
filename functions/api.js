@@ -73,7 +73,8 @@ export async function onRequest(context) {
 
   async function getData(dateStr, type = 'adoracao') {
     const isVigilia = type === 'vigilia';
-    const key = isVigilia ? `vigilia_cristo_rei_${dateStr}` : `adoracao_${dateStr}`;
+    const isSjb = type === 'sjb';
+    const key = isVigilia ? `vigilia_cristo_rei_${dateStr}` : (isSjb ? `adoracao_sjb_${dateStr}` : `adoracao_${dateStr}`);
     let data = null;
 
     if (kv) {
@@ -89,16 +90,18 @@ export async function onRequest(context) {
 
     const defaultQuoteText = isVigilia
       ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!"
-      : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
+      : (isSjb
+        ? "No silêncio da oficina e diante do Santíssimo Sacramento, São José nos ensina a guardar Jesus no coração."
+        : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.");
     const defaultQuoteAuthor = isVigilia
       ? "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico"
-      : "São Boaventura";
+      : (isSjb ? "Paróquia São José · São José do Barreiro" : "São Boaventura");
 
     if (!data) {
       data = {
         date: dateStr,
         title: isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
-        community: "Comunidade do Formoso",
+        community: isSjb ? "São José do Barreiro" : "Comunidade do Formoso",
         quote_text: defaultQuoteText,
         quote_author: defaultQuoteAuthor,
         slots: getDefaultSlots(type),
@@ -116,7 +119,7 @@ export async function onRequest(context) {
   }
 
   async function saveData(dateStr, data, type = 'adoracao') {
-    const key = type === 'vigilia' ? `vigilia_cristo_rei_${dateStr}` : `adoracao_${dateStr}`;
+    const key = type === 'vigilia' ? `vigilia_cristo_rei_${dateStr}` : (type === 'sjb' ? `adoracao_sjb_${dateStr}` : `adoracao_${dateStr}`);
     data.last_updated = new Date().toISOString();
     const jsonStr = JSON.stringify(data);
 
