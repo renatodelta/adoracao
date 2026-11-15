@@ -1,5 +1,38 @@
-// Cloudflare Pages Function - API Endpoint for Adoracao
-function getDefaultSlots() {
+// Cloudflare Pages Function - API Endpoint for Adoracao & Vigília de Cristo Rei
+function getVigiliaSlots() {
+  return [
+    { time: "Sáb 17:00", adorers: [], notes: "Abertura da Vigília de Cristo Rei" },
+    { time: "Sáb 18:00", adorers: [], notes: "" },
+    { time: "Sáb 19:00", adorers: [], notes: "" },
+    { time: "Sáb 20:00", adorers: [], notes: "" },
+    { time: "Sáb 21:00", adorers: [], notes: "" },
+    { time: "Sáb 22:00", adorers: [], notes: "" },
+    { time: "Sáb 23:00", adorers: [], notes: "" },
+    { time: "Dom 00:00", adorers: [], notes: "Madrugada" },
+    { time: "Dom 01:00", adorers: [], notes: "Madrugada" },
+    { time: "Dom 02:00", adorers: [], notes: "Madrugada" },
+    { time: "Dom 03:00", adorers: [], notes: "Madrugada" },
+    { time: "Dom 04:00", adorers: [], notes: "Madrugada" },
+    { time: "Dom 05:00", adorers: [], notes: "" },
+    { time: "Dom 06:00", adorers: [], notes: "" },
+    { time: "Dom 07:00", adorers: [], notes: "" },
+    { time: "Dom 08:00", adorers: [], notes: "" },
+    { time: "Dom 09:00", adorers: [], notes: "" },
+    { time: "Dom 10:00", adorers: [], notes: "" },
+    { time: "Dom 11:00", adorers: [], notes: "" },
+    { time: "Dom 12:00", adorers: [], notes: "" },
+    { time: "Dom 13:00", adorers: [], notes: "" },
+    { time: "Dom 14:00", adorers: [], notes: "" },
+    { time: "Dom 15:00", adorers: [], notes: "" },
+    { time: "Dom 16:00", adorers: [], notes: "" },
+    { time: "Dom 17:00", adorers: [{ name: "Santa Missa de Cristo Rei" }], notes: "Missa / Encerramento" }
+  ];
+}
+
+function getDefaultSlots(type = 'adoracao') {
+  if (type === 'vigilia') {
+    return getVigiliaSlots();
+  }
   return [
     { time: "05:00", adorers: [{ name: "Rosário" }], notes: "" },
     { time: "06:00", adorers: [{ name: "Rosário" }], notes: "" },
@@ -38,8 +71,9 @@ export async function onRequest(context) {
 
   const url = new URL(request.url);
 
-  async function getData(dateStr) {
-    const key = `adoracao_${dateStr}`;
+  async function getData(dateStr, type = 'adoracao') {
+    const isVigilia = type === 'vigilia';
+    const key = isVigilia ? `vigilia_cristo_rei_${dateStr}` : `adoracao_${dateStr}`;
     let data = null;
 
     if (kv) {
@@ -53,29 +87,36 @@ export async function onRequest(context) {
       data = memoryStore.get(key);
     }
 
+    const defaultQuoteText = isVigilia
+      ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!"
+      : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
+    const defaultQuoteAuthor = isVigilia
+      ? "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico"
+      : "São Boaventura";
+
     if (!data) {
       data = {
         date: dateStr,
-        title: "Quinta-feira de Adoração",
+        title: isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
         community: "Comunidade do Formoso",
-        quote_text: "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
-        quote_author: "São Boaventura",
-        slots: getDefaultSlots(),
+        quote_text: defaultQuoteText,
+        quote_author: defaultQuoteAuthor,
+        slots: getDefaultSlots(type),
         last_updated: new Date().toISOString()
       };
-      await saveData(dateStr, data);
+      await saveData(dateStr, data, type);
     } else {
       if (!data.quote_text) {
-        data.quote_text = "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
-        data.quote_author = "São Boaventura";
+        data.quote_text = defaultQuoteText;
+        data.quote_author = defaultQuoteAuthor;
       }
     }
 
     return data;
   }
 
-  async function saveData(dateStr, data) {
-    const key = `adoracao_${dateStr}`;
+  async function saveData(dateStr, data, type = 'adoracao') {
+    const key = type === 'vigilia' ? `vigilia_cristo_rei_${dateStr}` : `adoracao_${dateStr}`;
     data.last_updated = new Date().toISOString();
     const jsonStr = JSON.stringify(data);
 
@@ -90,8 +131,9 @@ export async function onRequest(context) {
   }
 
   if (request.method === 'GET') {
-    const date = url.searchParams.get('date') || new Date().toISOString().split('T')[0];
-    const data = await getData(date);
+    const type = url.searchParams.get('type') || 'adoracao';
+    const date = url.searchParams.get('date') || (type === 'vigilia' ? '2026-11-21' : new Date().toISOString().split('T')[0]);
+    const data = await getData(date, type);
     return new Response(JSON.stringify({ status: 'success', data }), { headers: CORS_HEADERS });
   }
 
@@ -104,14 +146,15 @@ export async function onRequest(context) {
     }
 
     const action = body.action || '';
-    const date = body.date || new Date().toISOString().split('T')[0];
+    const type = body.type || url.searchParams.get('type') || 'adoracao';
+    const date = body.date || (type === 'vigilia' ? '2026-11-21' : new Date().toISOString().split('T')[0]);
 
-    let data = await getData(date);
+    let data = await getData(date, type);
 
     if (action === 'save_quote') {
       data.quote_text = (body.quote_text || "").trim();
       data.quote_author = (body.quote_author || "").trim();
-      await saveData(date, data);
+      await saveData(date, data, type);
       return new Response(JSON.stringify({ status: 'success', message: 'Frase atualizada com sucesso!', data }), { headers: CORS_HEADERS });
     }
 
@@ -136,7 +179,7 @@ export async function onRequest(context) {
       }
 
       if (updated) {
-        await saveData(date, data);
+        await saveData(date, data, type);
         return new Response(JSON.stringify({ status: 'success', message: 'Horário agendado com sucesso!', data }), { headers: CORS_HEADERS });
       } else {
         return new Response(JSON.stringify({ status: 'error', message: 'Horário não encontrado.' }), { headers: CORS_HEADERS });
@@ -156,13 +199,13 @@ export async function onRequest(context) {
         }
       }
 
-      await saveData(date, data);
+      await saveData(date, data, type);
       return new Response(JSON.stringify({ status: 'success', message: 'Adorador removido com sucesso!', data }), { headers: CORS_HEADERS });
     }
 
     if (action === 'reset_day') {
-      data.slots = getDefaultSlots();
-      await saveData(date, data);
+      data.slots = getDefaultSlots(type);
+      await saveData(date, data, type);
       return new Response(JSON.stringify({ status: 'success', message: 'Horários reiniciados para o padrão!', data }), { headers: CORS_HEADERS });
     }
 
@@ -184,14 +227,14 @@ export async function onRequest(context) {
         created_at: new Date().toISOString()
       });
 
-      await saveData(date, data);
+      await saveData(date, data, type);
       return new Response(JSON.stringify({ status: 'success', message: 'Pedido de oração adicionado com sucesso!', data }), { headers: CORS_HEADERS });
     }
 
     if (action === 'save_all') {
       if (Array.isArray(body.slots)) {
         data.slots = body.slots;
-        await saveData(date, data);
+        await saveData(date, data, type);
         return new Response(JSON.stringify({ status: 'success', message: 'Escala salva com sucesso!', data }), { headers: CORS_HEADERS });
       }
     }

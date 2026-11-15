@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vigília de Cristo Rei — 24 Horas de Adoração</title>
+  <meta name="description"
+    content="Escala de Horários da Vigília de 24 Horas de Adoração ao Santíssimo Sacramento — Solenidade de Cristo Rei (Encerramento do Ano Litúrgico)">
+  <meta name="theme-color" content="#4a0a13">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vigília Cristo Rei">
+  <link rel="apple-touch-icon" href="assets/custodia.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="assets/custodia2.jpg" type="image/jpeg">
+</head>
+
+<body>
+
+  <!-- Header Banner with Sacred Monstrance & Arabesques -->
+  <header class="header-banner">
+    <div class="divine-rays"></div>
+    <div class="header-content">
+
+      <!-- Top Flourish -->
+      <div class="flourish-divider">
+        <svg viewBox="0 0 500 60" class="svg-flourish">
+          <path d="M 50,30 Q 150,5 250,30 Q 350,55 450,30 M 180,30 C 200,10 230,10 250,30 C 270,50 300,50 320,30"
+            stroke="url(#goldGrad)" stroke-width="2" fill="none" />
+          <circle cx="250" cy="30" r="5" fill="#d4af37" />
+          <circle cx="210" cy="30" r="3" fill="#e5be48" />
+          <circle cx="290" cy="30" r="3" fill="#e5be48" />
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#b38728" />
+              <stop offset="50%" stop-color="#fbf5b7" />
+              <stop offset="100%" stop-color="#b38728" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="monstrance-container" id="monstranceContainer">
+        <div class="monstrance-halo"></div>
+        <img src="assets/custodia.jpg" alt="Santíssimo Sacramento - Custódia de Adoração" class="monstrance-img" id="monstranceImg">
+      </div>
+
+      <h1 class="header-title">Vigília de Cristo Rei</h1>
+      <div class="header-subtitle-wrapper">
+        <span class="vinde-adoremos">VINDE E ADOREMOS</span>
+        <div>
+          <span class="cristo-rei-badge">👑 Solenidade de Cristo Rei · Encerramento do Ano Litúrgico</span>
+        </div>
+        <div id="adminHeaderBadge" style="display: none;" class="admin-badge">🔑 Painel do Administrador</div>
+      </div>
+
+      <!-- Bottom Flourish -->
+      <div class="flourish-divider bottom-flourish">
+        <svg viewBox="0 0 500 40" class="svg-flourish">
+          <path d="M 100,20 Q 250,35 400,20 M 170,20 Q 250,5 330,20" stroke="url(#goldGrad)" stroke-width="1.5"
+            fill="none" />
+          <polygon points="250,15 255,25 245,25" fill="#d4af37" />
+        </svg>
+      </div>
+
+      <!-- Schedule Pill Badge -->
+      <div class="schedule-pill-badge">
+        <div class="pill-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+          </svg>
+        </div>
+        <div class="pill-text">
+          <span class="pill-label">VIGÍLIA 24 HORAS DE ADORAÇÃO</span>
+          <span class="pill-time">SÁB 17H ÀS DOM 17H (SANTA MISSA)</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Cristo Rei Quote Banner -->
+    <section class="saint-quote-card">
+      <div class="quote-icon">“</div>
+      <div class="quote-content">
+        <p class="quote-text" id="quoteText">O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!</p>
+        <span class="quote-author" id="quoteAuthor">— Solenidade de Cristo Rei · Encerramento do Ano Litúrgico</span>
+      </div>
+      <button id="editQuoteBtn" class="btn-edit-quote" style="display: none;" title="Editar Frase">
+        ✏️ Editar Frase
+      </button>
+    </section>
+
+    <!-- Sacred Intentions Live Ticker Bar -->
+    <section class="intentions-ticker-bar" id="intentionsTickerBar">
+      <div class="ticker-badge" id="tickerBadge">
+        <span class="ticker-icon">🕊️</span>
+        <span class="ticker-title">Intenções dos Adoradores:</span>
+      </div>
+      <div class="ticker-track-wrapper" id="tickerTrackWrapper" title="Clique para ler as intenções dos adoradores inscritos">
+        <div class="ticker-track" id="tickerTrack">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls & Actions -->
+    <section class="control-bar">
+      <div class="control-left">
+        <div class="date-selector">
+          <label for="adoracaoDate">📅 Início da Vigília:</label>
+          <input type="date" id="adoracaoDate">
+        </div>
+        <button id="viewIntentionsBtn" class="btn btn-mural" title="Ver Mural de Intenções dos Adoradores">
+          📜 Mural de Intenções
+        </button>
+      </div>
+
+      <div class="action-buttons" id="adminActionButtons" style="display: none;">
+        <button id="shareWpBtn" class="btn btn-whatsapp" title="Compartilhar lista no WhatsApp">
+          📱 Enviar no WhatsApp
+        </button>
+        <button id="resetBtn" class="btn btn-outline btn-reset" title="Restaurar horários padrão">
+          🔄 Restaurar
+        </button>
+      </div>
+    </section>
+
+    <!-- Stats & Coverage Progress -->
+    <section class="stats-card">
+      <div class="stats-header">
+        <span class="stats-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="#d4af37"
+            style="vertical-align: sub; margin-right: 4px;">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+          Cobertura da Vigília (24h)
+        </span>
+        <span class="stats-count" id="statsCount">Carregando...</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <div class="stats-subtext">Garantindo que Cristo Rei, presente na Eucaristia, permaneça acompanhado e adorado durante todas as 24 horas até a Santa Missa das 17h de domingo.
+      </div>
+    </section>
+
+    <!-- Alert Banner for Missing Hours -->
+    <div id="alertBanner" class="alert-divine-card" style="display: none;">
+    </div>
+
+    <!-- Time Slots List -->
+    <section class="slots-container" id="slotsList">
+      <!-- Dynamic slot cards loaded via JS -->
+    </section>
+
+  </main>
+
+  <!-- Divine Footer -->
+  <footer class="divine-footer">
+    <div class="footer-content">
+      <p class="chapel-name">Vigília de Cristo Rei — Encerramento do Ano Litúrgico</p>
+      <p class="footer-blessing">"Cristo vence, Cristo reina, Cristo impera! Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!"</p>
+    </div>
+  </footer>
+
+  <!-- Modal Booking Dialog -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Inscrever-se para a Vigília</h3>
+        <button class="close-btn" id="closeModalBtn">&times;</button>
+      </div>
+      <form id="bookingForm">
+        <div class="modal-body">
+          <p class="modal-intro">
+            Você está se inscrevendo para adorar a Cristo Rei às <strong id="modalSlotTime"></strong>.
+          </p>
+
+          <div class="form-group">
+            <label for="adorerName">Seu Nome *</label>
+            <input type="text" id="adorerName" placeholder="Ex: Maria da Silva" required autocomplete="name">
+          </div>
+
+          <div class="form-group booking-intention-box">
+            <label for="adorerIntention" class="booking-intention-label">
+              <span>🙏 Seu Pedido de Oração / Intenção</span>
+              <span class="badge-optional">Opcional</span>
+            </label>
+            <p class="form-subtext">Deixe a intenção que você levará ao Santíssimo neste horário. Ela será exibida no mural de orações.</p>
+            <textarea id="adorerIntention" rows="3"
+              placeholder="Ex: Pela saúde da minha família, pela conversão, em ação de graças a Cristo Rei..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
+          <button type="submit" class="btn btn-gold">Confirmar Inscrição e Pedido</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Quote Edit Dialog -->
+  <div class="modal-overlay" id="quoteModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Editar Frase de Oração</h3>
+        <button class="close-btn" id="closeQuoteModalBtn">&times;</button>
+      </div>
+      <form id="quoteForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="editQuoteText">Frase de Inspiração *</label>
+            <textarea id="editQuoteText" rows="3" required placeholder="Digite a frase inspiradora..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editQuoteAuthor">Autor / Santo *</label>
+            <input type="text" id="editQuoteAuthor" required placeholder="Ex: Solenidade de Cristo Rei">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelQuoteModalBtn">Cancelar</button>
+          <button type="submit" class="btn btn-gold">Salvar Frase</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Mural de Oração / Pedidos e Intenções -->
+  <div class="modal-overlay" id="intentionsModal">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <h3>🙏 Mural de Intenções da Vigília</h3>
+        <button class="close-btn" id="closeIntentionsModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Banner de sucesso pós-agendamento -->
+        <div id="bookingSuccessNotice" class="booking-success-banner" style="display: none;">
+          <div class="success-icon">✨</div>
+          <div class="success-text">
+            <strong>Inscrição e Pedido Confirmados!</strong>
+            <p>Deus abençoe sua disponibilidade! Durante a sua hora de vigília, coloque em suas preces estas intenções
+              dos adoradores da nossa comunidade:</p>
+          </div>
+        </div>
+
+        <div class="intentions-intro">
+          <p class="intentions-subtitle">Intenções dos adoradores para a Vigília de <strong id="intentionsDateLabel"></strong>:</p>
+        </div>
+
+        <!-- Lista dinâmica de intenções -->
+        <div id="intentionsList" class="intentions-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="intentions-enroll-hint">
+          <span class="hint-icon">💡</span>
+          <p>Deseja colocar seu pedido de oração diante de Cristo Rei? <strong>Inscreva-se em um dos horários da vigília</strong> na página inicial.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold" id="closeIntentionsFooterBtn">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Sheet View -->
+  <div class="printable-sheet" id="printableSheet">
+    <div style="text-align: center; border-bottom: 2px solid #5c131d; padding-bottom: 12px; margin-bottom: 15px;">
+      <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img" id="sheetHeaderImg">
+      <h2
+        style="font-family: 'Cinzel', serif; font-size: 22px; color: #5c131d; margin-top: 6px; text-transform: uppercase;">
+        Vigília de Cristo Rei — 24 Horas</h2>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #7a1c29;">Vinde e
+        Adoremos — Encerramento do Ano Litúrgico</p>
+      <p style="font-weight: bold; margin-top: 6px; font-size: 14px;">Vigília: <span id="printDateLabel"></span> (Sáb 17h às Dom 17h)</p>
+    </div>
+
+    <table class="sheet-table">
+      <thead>
+        <tr>
+          <th style="width: 25%;">Horário</th>
+          <th style="width: 75%;">Adoradores Inscritos</th>
+        </tr>
+      </thead>
+      <tbody id="printTableBody">
+        <!-- Rows populated dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="js/vigilia.js"></script>
+</body>
+
+</html>

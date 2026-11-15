@@ -13,17 +13,51 @@ if (!is_dir($dataDir)) {
     mkdir($dataDir, 0777, true);
 }
 
-function getFilePath($date) {
+function getFilePath($date, $type = 'adoracao') {
     global $dataDir;
     // Sanitize date string YYYY-MM-DD
     $cleanDate = preg_replace('/[^0-9\-]/', '', $date);
     if (empty($cleanDate)) {
-        $cleanDate = date('Y-m-d');
+        $cleanDate = ($type === 'vigilia') ? '2026-11-21' : date('Y-m-d');
     }
-    return $dataDir . '/adoracao_' . $cleanDate . '.json';
+    $prefix = ($type === 'vigilia') ? 'vigilia_cristo_rei_' : 'adoracao_';
+    return $dataDir . '/' . $prefix . $cleanDate . '.json';
 }
 
-function getDefaultSlots() {
+function getVigiliaSlots() {
+    return [
+        ["time" => "Sáb 17:00", "adorers" => [], "notes" => "Abertura da Vigília de Cristo Rei"],
+        ["time" => "Sáb 18:00", "adorers" => [], "notes" => ""],
+        ["time" => "Sáb 19:00", "adorers" => [], "notes" => ""],
+        ["time" => "Sáb 20:00", "adorers" => [], "notes" => ""],
+        ["time" => "Sáb 21:00", "adorers" => [], "notes" => ""],
+        ["time" => "Sáb 22:00", "adorers" => [], "notes" => ""],
+        ["time" => "Sáb 23:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 00:00", "adorers" => [], "notes" => "Madrugada"],
+        ["time" => "Dom 01:00", "adorers" => [], "notes" => "Madrugada"],
+        ["time" => "Dom 02:00", "adorers" => [], "notes" => "Madrugada"],
+        ["time" => "Dom 03:00", "adorers" => [], "notes" => "Madrugada"],
+        ["time" => "Dom 04:00", "adorers" => [], "notes" => "Madrugada"],
+        ["time" => "Dom 05:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 06:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 07:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 08:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 09:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 10:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 11:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 12:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 13:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 14:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 15:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 16:00", "adorers" => [], "notes" => ""],
+        ["time" => "Dom 17:00", "adorers" => [["name" => "Santa Missa de Cristo Rei", "phone" => ""]], "notes" => "Missa / Encerramento"]
+    ];
+}
+
+function getDefaultSlots($type = 'adoracao') {
+    if ($type === 'vigilia') {
+        return getVigiliaSlots();
+    }
     return [
         ["time" => "05:00", "adorers" => [["name" => "Rosário", "phone" => ""]], "notes" => ""],
         ["time" => "06:00", "adorers" => [["name" => "Rosário", "phone" => ""]], "notes" => ""],
@@ -46,18 +80,22 @@ function getDefaultSlots() {
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    $date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
-    $filePath = getFilePath($date);
+    $type = isset($_GET['type']) ? $_GET['type'] : 'adoracao';
+    $date = isset($_GET['date']) ? $_GET['date'] : (($type === 'vigilia') ? '2026-11-21' : date('Y-m-d'));
+    $filePath = getFilePath($date, $type);
 
     if (file_exists($filePath)) {
         $content = file_get_contents($filePath);
         $data = json_decode($content, true);
     } else {
+        $isVigilia = ($type === 'vigilia');
         $data = [
             "date" => $date,
-            "title" => "Quinta-feira de Adoração",
+            "title" => $isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
             "community" => "Comunidade do Formoso",
-            "slots" => getDefaultSlots(),
+            "quote_text" => $isVigilia ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!" : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
+            "quote_author" => $isVigilia ? "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico" : "São Boaventura",
+            "slots" => getDefaultSlots($type),
             "last_updated" => date('c')
         ];
         file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
@@ -82,23 +120,32 @@ if ($method === 'POST') {
     }
 
     $action = isset($input['action']) ? $input['action'] : '';
-    $date = isset($input['date']) ? $input['date'] : date('Y-m-d');
-    $filePath = getFilePath($date);
+    $type = isset($input['type']) ? $input['type'] : (isset($_GET['type']) ? $_GET['type'] : 'adoracao');
+    $isVigilia = ($type === 'vigilia');
+    $date = isset($input['date']) ? $input['date'] : ($isVigilia ? '2026-11-21' : date('Y-m-d'));
+    $filePath = getFilePath($date, $type);
+
+    $defaultQuoteText = $isVigilia
+        ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!"
+        : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
+    $defaultQuoteAuthor = $isVigilia
+        ? "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico"
+        : "São Boaventura";
 
     if (file_exists($filePath)) {
         $data = json_decode(file_get_contents($filePath), true);
         if (!isset($data['quote_text'])) {
-            $data['quote_text'] = "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
-            $data['quote_author'] = "São Boaventura";
+            $data['quote_text'] = $defaultQuoteText;
+            $data['quote_author'] = $defaultQuoteAuthor;
         }
     } else {
         $data = [
             "date" => $date,
-            "title" => "Quinta-feira de Adoração",
+            "title" => $isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
             "community" => "Comunidade do Formoso",
-            "quote_text" => "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
-            "quote_author" => "São Boaventura",
-            "slots" => getDefaultSlots(),
+            "quote_text" => $defaultQuoteText,
+            "quote_author" => $defaultQuoteAuthor,
+            "slots" => getDefaultSlots($type),
             "last_updated" => date('c')
         ];
     }
@@ -171,7 +218,7 @@ if ($method === 'POST') {
     }
 
     if ($action === 'reset_day') {
-        $data['slots'] = getDefaultSlots();
+        $data['slots'] = getDefaultSlots($type);
         $data['last_updated'] = date('c');
         file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         echo json_encode(["status" => "success", "message" => "Horários reiniciados para o padrão!", "data" => $data]);

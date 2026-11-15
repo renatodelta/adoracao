@@ -1614,3 +1614,35 @@ body::before {
 
 
 
+
+/* ==========================================================================
+   Vigília de Cristo Rei (24 Horas - Sábado para Domingo)
+   ========================================================================== */
+.slot-day-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--sacred-burgundy-medium);
+  margin-bottom: 2px;
+}
+
+.slot-day-label.sunday {
+  color: #8a6411;
+}
+
+.cristo-rei-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.55);
+  background: rgba(212, 175, 55, 0.14);
+  color: #fbf5b7;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
