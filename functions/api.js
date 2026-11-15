@@ -91,7 +91,7 @@ export async function onRequest(context) {
       ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!"
       : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
     const defaultQuoteAuthor = isVigilia
-      ? "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico"
+      ? "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico"
       : "São Boaventura";
 
     if (!data) {

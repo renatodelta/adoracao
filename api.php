@@ -94,7 +94,7 @@ if ($method === 'GET') {
             "title" => $isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
             "community" => "Comunidade do Formoso",
             "quote_text" => $isVigilia ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!" : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.",
-            "quote_author" => $isVigilia ? "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico" : "São Boaventura",
+            "quote_author" => $isVigilia ? "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico" : "São Boaventura",
             "slots" => getDefaultSlots($type),
             "last_updated" => date('c')
         ];
@@ -129,7 +129,7 @@ if ($method === 'POST') {
         ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!"
         : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.";
     $defaultQuoteAuthor = $isVigilia
-        ? "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico"
+        ? "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico"
         : "São Boaventura";
 
     if (file_exists($filePath)) {

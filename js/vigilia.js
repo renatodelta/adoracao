@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const qText = scheduleData.quote_text || "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!";
-      const qAuthor = (scheduleData.quote_author || "Solenidade de Cristo Rei").replace(/^—\s*/, '');
+      const qAuthor = (scheduleData.quote_author || "Nosso Senhor Jesus Cristo, Rei do Universo").replace(/^—\s*/, '');
       msg += `_“${qText}”_\n— *${qAuthor}*`;
 
       const encodedMsg = encodeURIComponent(msg);
@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultData = {
       date: dateStr,
       quote_text: "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!",
-      quote_author: "Solenidade de Cristo Rei · Encerramento do Ano Litúrgico",
+      quote_author: "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico",
       slots: [
         { time: "Sáb 17:00", adorers: [], notes: "Abertura da Vigília de Cristo Rei" },
         { time: "Sáb 18:00", adorers: [] },
@@ -740,7 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const emptyHtml = `
         <span class="ticker-item">
           <span class="ticker-item-dot">👑</span>
-          <span class="ticker-item-text">"Cristo vence, Cristo reina, Cristo impera!" — Solenidade de Cristo Rei</span>
+          <span class="ticker-item-text">"Cristo vence, Cristo reina, Cristo impera!" — Nosso Senhor Jesus Cristo, Rei do Universo</span>
         </span>
         <span class="ticker-item">
           <span class="ticker-item-dot">✦</span>
