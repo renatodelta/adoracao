@@ -20,7 +20,7 @@ function getFilePath($date, $type = 'adoracao') {
     if (empty($cleanDate)) {
         $cleanDate = ($type === 'vigilia') ? '2026-11-21' : date('Y-m-d');
     }
-    $prefix = ($type === 'vigilia') ? 'vigilia_cristo_rei_' : (($type === 'sjb') ? 'adoracao_sjb_' : 'adoracao_');
+    $prefix = ($type === 'vigilia') ? 'vigilia_cristo_rei_' : (($type === 'sjb') ? 'cerco_sjb_' : 'adoracao_');
     return $dataDir . '/' . $prefix . $cleanDate . '.json';
 }
 
@@ -54,9 +54,22 @@ function getVigiliaSlots() {
     ];
 }
 
+function getCercoJericoSlots() {
+    $slots = [];
+    for ($h = 0; $h < 24; $h++) {
+        $time = str_pad($h, 2, '0', STR_PAD_LEFT) . ':00';
+        $notes = ($h < 6) ? 'Madrugada' : '';
+        $slots[] = ["time" => $time, "adorers" => [], "notes" => $notes];
+    }
+    return $slots;
+}
+
 function getDefaultSlots($type = 'adoracao') {
     if ($type === 'vigilia') {
         return getVigiliaSlots();
+    }
+    if ($type === 'sjb') {
+        return getCercoJericoSlots();
     }
     return [
         ["time" => "05:00", "adorers" => [["name" => "Rosário", "phone" => ""]], "notes" => ""],

@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Adoração ao Santíssimo — Paróquia São José (São José do Barreiro)</title>
+  <title>Cerco de Jericó — Adoração 24 Horas · Paróquia São José (São José do Barreiro)</title>
   <meta name="description"
-    content="Escala de Horários de Adoração ao Santíssimo Sacramento — Paróquia São José (São José do Barreiro - SP)">
-  <meta name="theme-color" content="#153027">
+    content="Cerco de Jericó — Adoração 24 Horas ao Santíssimo Sacramento (15 a 22 de Novembro) — Paróquia São José, São José do Barreiro - SP">
+  <meta name="theme-color" content="#0b224a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Adoração SJB">
-  <link rel="apple-touch-icon" href="assets/custodia.jpg">
+  <meta name="apple-mobile-web-app-title" content="Cerco de Jericó SJB">
+  <link rel="apple-touch-icon" href="assets/cerco-jerico-sjb.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -23,17 +23,17 @@
 
 <body>
 
-  <!-- Compact Sanctuary Top Bar -->
+  <!-- Cerco de Jericó Top Bar -->
   <header class="sjb-topbar">
     <div class="sjb-topbar-inner">
       <div class="sjb-brand">
-        <div class="sjb-avatar-wrap">
-          <img src="assets/custodia.jpg" alt="Santíssimo Sacramento" class="sjb-avatar" id="monstranceImg">
+        <div class="sjb-avatar-wrap" id="openPosterBtn" title="Clique para ver o cartaz oficial">
+          <img src="assets/cerco-jerico-sjb.jpg" alt="Cartaz Cerco de Jericó - Paróquia São José" class="sjb-avatar">
         </div>
         <div class="sjb-brand-text">
-          <div class="sjb-eyebrow">⛪ Paróquia São José · Matriz de 1881</div>
-          <h1 class="sjb-title">Quinta-feira de Adoração</h1>
-          <p class="sjb-location">São José do Barreiro — SP · Das 05h às 19h</p>
+          <div class="sjb-eyebrow">⛪ Paróquia São José · São José do Barreiro — SP</div>
+          <h1 class="sjb-title">Cerco de Jericó <span class="sjb-title-badge">24 HORAS</span></h1>
+          <p class="sjb-location">📅 15 a 22 de Novembro · O Santíssimo Sacramento ficará exposto <strong>Dia e Noite</strong></p>
         </div>
       </div>
 
@@ -45,10 +45,10 @@
           <input type="date" id="adoracaoDate" aria-label="Data da Adoração">
         </div>
 
-        <div class="sjb-coverage-pill" title="Cobertura dos horários">
+        <div class="sjb-coverage-pill" title="Cobertura das 24 horas">
           <div class="sjb-coverage-top">
-            <span class="sjb-coverage-label">Cobertura</span>
-            <strong id="statsCount">0/14</strong>
+            <span class="sjb-coverage-label">Cobertura 24h</span>
+            <strong id="statsCount">0/24</strong>
           </div>
           <div class="sjb-progress-track">
             <div class="sjb-progress-fill" id="progressFill"></div>
@@ -61,27 +61,35 @@
     <div class="sjb-admin-bar" id="adminActionButtons" style="display: none;">
       <button id="shareWpBtn" class="sjb-btn sjb-btn-whatsapp">📱 Enviar Escala no WhatsApp</button>
       <button id="editQuoteBtn" class="sjb-btn sjb-btn-outline-light">✏️ Editar Frase</button>
-      <button id="resetBtn" class="sjb-btn sjb-btn-danger-outline">🔄 Restaurar Horários</button>
+      <button id="resetBtn" class="sjb-btn sjb-btn-danger-outline">🔄 Restaurar 24h</button>
     </div>
   </header>
 
+  <!-- Quick 8-Day Selector (15 a 22 de Novembro) -->
+  <section class="sjb-days-strip" aria-label="Dias do Cerco de Jericó">
+    <div class="sjb-days-inner" id="cercoDaysBar">
+      <!-- Populated via JS -->
+    </div>
+  </section>
+
   <!-- Mobile Tab Switcher -->
   <nav class="sjb-mobile-tabs" aria-label="Navegação">
-    <button type="button" class="sjb-tab-btn active" data-tab="schedule">🕒 Horários</button>
+    <button type="button" class="sjb-tab-btn active" data-tab="schedule">🕒 Escala 24h</button>
     <button type="button" class="sjb-tab-btn" data-tab="intentions">🙏 Livro de Intenções <span class="sjb-tab-count" id="intentionsCountBadge">0</span></button>
   </nav>
 
   <!-- Main 2-Column Split Workspace -->
   <main class="sjb-workspace">
 
-    <!-- LEFT COLUMN: Inspiration + Live Prayer Book -->
+    <!-- LEFT COLUMN: Parchment Verses + Poster + Live Prayer Book -->
     <aside class="sjb-sidebar sjb-panel" id="panelIntentions">
 
-      <!-- Quote Card -->
+      <!-- Parchment Verses Card -->
       <section class="sjb-card sjb-quote-card">
-        <div class="sjb-quote-mark">“</div>
-        <p class="sjb-quote-text" id="quoteText">No silêncio da oficina e diante do Santíssimo Sacramento, São José nos ensina a guardar Jesus no coração.</p>
-        <span class="sjb-quote-author" id="quoteAuthor">— Paróquia São José · São José do Barreiro</span>
+        <div class="sjb-scroll-verses">
+          <p class="sjb-quote-text" id="quoteText">“Eu e minha casa serviremos ao Senhor.” (Js 24,15)<br>“Buscai o Senhor enquanto Ele se deixa encontrar.” (Is 55,6)</p>
+          <span class="sjb-quote-author" id="quoteAuthor">— Cerco de Jericó · 15 a 22 de Novembro · Paróquia São José</span>
+        </div>
       </section>
 
       <!-- Always-Visible Prayer Book / Intentions -->
@@ -89,7 +97,7 @@
         <div class="sjb-card-header">
           <div>
             <h2>🙏 Livro de Intenções</h2>
-            <p class="sjb-muted">Preces da comunidade para <strong id="intentionsDateLabel">esta quinta-feira</strong></p>
+            <p class="sjb-muted">Preces do Cerco de Jericó para <strong id="intentionsDateLabel">hoje</strong></p>
           </div>
         </div>
 
@@ -98,16 +106,25 @@
         </div>
 
         <form id="addGeneralIntentionForm" class="sjb-intention-form">
-          <div class="sjb-form-title">Deixar uma intenção no altar</div>
+          <div class="sjb-form-title">Deixar uma intenção diante do Santíssimo</div>
           <input type="text" id="generalIntentionName" placeholder="Seu nome (ou deixe em branco para Anônimo)">
           <textarea id="generalIntentionText" rows="2" placeholder="Escreva seu pedido de oração..." required></textarea>
           <button type="submit" class="sjb-btn sjb-btn-secondary sjb-btn-block">🕊️ Registrar Intenção</button>
         </form>
       </section>
 
+      <!-- Mini Poster Preview -->
+      <button type="button" class="sjb-poster-card" id="posterPreviewBtn" title="Ampliar cartaz oficial">
+        <img src="assets/cerco-jerico-sjb.jpg" alt="Cartaz Cerco de Jericó">
+        <div class="sjb-poster-caption">
+          <strong>📜 Cartaz Oficial</strong>
+          <span>Toque para ampliar</span>
+        </div>
+      </button>
+
     </aside>
 
-    <!-- RIGHT COLUMN: Visual Slot Matrix + Inline Booking Drawer -->
+    <!-- RIGHT COLUMN: Visual 24h Slot Matrix + Inline Booking Drawer -->
     <section class="sjb-main sjb-panel active" id="panelSchedule">
 
       <!-- Alert Banner when hours are missing -->
@@ -116,14 +133,15 @@
       <!-- Filter Bar -->
       <div class="sjb-filter-bar">
         <div class="sjb-filter-group" role="tablist" aria-label="Filtrar horários">
-          <button type="button" class="sjb-filter-pill active" data-filter="all">Todos</button>
+          <button type="button" class="sjb-filter-pill active" data-filter="all">Todos (24h)</button>
           <button type="button" class="sjb-filter-pill" data-filter="empty">Precisa de Adorador</button>
+          <button type="button" class="sjb-filter-pill" data-filter="dawn">🌙 Madrugada (00h–05h)</button>
           <button type="button" class="sjb-filter-pill" data-filter="filled">Preenchidos</button>
         </div>
-        <span class="sjb-helper-hint">Toque em um horário para ver detalhes ou se inscrever</span>
+        <span class="sjb-helper-hint">Toque em um horário para se inscrever</span>
       </div>
 
-      <!-- Visual Grid of Time Slots -->
+      <!-- Visual Grid of 24 Time Slots -->
       <div class="sjb-slot-grid" id="slotsList">
         <!-- Populated dynamically via JS -->
       </div>
@@ -133,14 +151,14 @@
         <div class="sjb-detail-empty" id="detailEmptyState">
           <span class="sjb-detail-icon">🕯️</span>
           <h3>Escolha um horário acima</h3>
-          <p>Clique em qualquer horário da grade para ver quem já está adorando ou confirmar a sua hora diante do Santíssimo.</p>
+          <p>Clique em qualquer horário da grade de 24 horas para ver quem já está adorando ou confirmar a sua hora diante do Santíssimo.</p>
         </div>
 
         <div class="sjb-detail-active" id="detailActiveState" style="display: none;">
           <div class="sjb-detail-header">
             <div>
-              <span class="sjb-detail-eyebrow">Horário Selecionado</span>
-              <h3 class="sjb-detail-time" id="detailSlotTime">08:00</h3>
+              <span class="sjb-detail-eyebrow">Horário Selecionado · <span id="detailDateLabel"></span></span>
+              <h3 class="sjb-detail-time" id="detailSlotTime">00:00</h3>
             </div>
             <span class="sjb-status-badge" id="detailSlotBadge">Vago</span>
           </div>
@@ -151,7 +169,7 @@
 
           <!-- Success Notice -->
           <div id="bookingSuccessNotice" class="sjb-success-toast" style="display: none;">
-            ✨ <strong>Inscrição confirmada!</strong> Deus abençoe sua hora de adoração.
+            ✨ <strong>Inscrição confirmada!</strong> Deus abençoe sua hora de adoração no Cerco de Jericó.
           </div>
 
           <!-- Inline Booking Form -->
@@ -178,9 +196,22 @@
   </main>
 
   <footer class="sjb-footer">
-    <p><strong>Paróquia São José</strong> — São José do Barreiro (SP) · Diocese de Lorena</p>
-    <p class="sjb-footer-sub">“Bendito, louvado e adorado seja a todo momento o Santíssimo Sacramento!”</p>
+    <p><strong>Cerco de Jericó — Adoração 24 Horas</strong> · Paróquia São José (São José do Barreiro - SP)</p>
+    <p class="sjb-footer-sub">“Eu e minha casa serviremos ao Senhor.” (Js 24,15)</p>
   </footer>
+
+  <!-- Poster Lightbox Modal -->
+  <div class="modal-overlay" id="posterModal">
+    <div class="modal-card modal-poster">
+      <div class="modal-header">
+        <h3>Cerco de Jericó — 15 a 22 de Novembro</h3>
+        <button class="close-btn" id="closePosterModalBtn">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 12px; text-align: center; background: #0b224a;">
+        <img src="assets/cerco-jerico-sjb.jpg" alt="Cartaz Cerco de Jericó" style="max-width: 100%; max-height: 75vh; border-radius: 8px;">
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Quote Edit Dialog (Admin Only) -->
   <div class="modal-overlay" id="quoteModal">
@@ -196,8 +227,8 @@
             <textarea id="editQuoteText" rows="3" required placeholder="Digite a frase inspiradora..."></textarea>
           </div>
           <div class="form-group">
-            <label for="editQuoteAuthor">Autor / Santo *</label>
-            <input type="text" id="editQuoteAuthor" required placeholder="Ex: São José">
+            <label for="editQuoteAuthor">Autor / Referência *</label>
+            <input type="text" id="editQuoteAuthor" required placeholder="Ex: Js 24,15">
           </div>
         </div>
         <div class="modal-footer">
@@ -210,12 +241,12 @@
 
   <!-- Printable Sheet View -->
   <div class="printable-sheet" id="printableSheet">
-    <div style="text-align: center; border-bottom: 2px solid #153027; padding-bottom: 12px; margin-bottom: 15px;">
+    <div style="text-align: center; border-bottom: 2px solid #0b224a; padding-bottom: 12px; margin-bottom: 15px;">
       <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img">
-      <h2 style="font-family: 'Cinzel', serif; font-size: 22px; color: #153027; margin-top: 6px; text-transform: uppercase;">
-        Quinta-feira de Adoração</h2>
-      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #224a3d;">
-        Paróquia São José — São José do Barreiro (SP)</p>
+      <h2 style="font-family: 'Cinzel', serif; font-size: 22px; color: #0b224a; margin-top: 6px; text-transform: uppercase;">
+        Cerco de Jericó — Adoração 24 Horas</h2>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #13356e;">
+        Paróquia São José — São José do Barreiro (SP) · 15 a 22 de Novembro</p>
       <p style="font-weight: bold; margin-top: 6px; font-size: 14px;">Data: <span id="printDateLabel"></span></p>
     </div>
 

@@ -1,8 +1,19 @@
-// JS App for Quinta-feira de Adoração — Paróquia São José (São José do Barreiro)
+// JS App for Cerco de Jericó — Adoração 24 Horas · Paróquia São José (São José do Barreiro)
 
 document.addEventListener('DOMContentLoaded', () => {
   const SCHEDULE_TYPE = 'sjb';
-  let currentDate = getNextThursdayDateStr();
+  const CERCO_DAYS = [
+    { date: '2026-11-15', label: '15/11 (Dom)' },
+    { date: '2026-11-16', label: '16/11 (Seg)' },
+    { date: '2026-11-17', label: '17/11 (Ter)' },
+    { date: '2026-11-18', label: '18/11 (Qua)' },
+    { date: '2026-11-19', label: '19/11 (Qui)' },
+    { date: '2026-11-20', label: '20/11 (Sex)' },
+    { date: '2026-11-21', label: '21/11 (Sáb)' },
+    { date: '2026-11-22', label: '22/11 (Dom)' }
+  ];
+
+  let currentDate = getInitialCercoDate();
   let scheduleData = null;
   let selectedTimeSlot = null;
   let activeFilter = 'all';
@@ -13,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // DOM Elements
   const dateInput = document.getElementById('adoracaoDate');
+  const cercoDaysBar = document.getElementById('cercoDaysBar');
   const slotsList = document.getElementById('slotsList');
   const progressFill = document.getElementById('progressFill');
   const statsCount = document.getElementById('statsCount');
@@ -39,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inline Detail Drawer Elements
   const detailEmptyState = document.getElementById('detailEmptyState');
   const detailActiveState = document.getElementById('detailActiveState');
+  const detailDateLabel = document.getElementById('detailDateLabel');
   const detailSlotTime = document.getElementById('detailSlotTime');
   const detailSlotBadge = document.getElementById('detailSlotBadge');
   const detailAdorersList = document.getElementById('detailAdorersList');
@@ -54,6 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const addGeneralIntentionForm = document.getElementById('addGeneralIntentionForm');
   const generalIntentionName = document.getElementById('generalIntentionName');
   const generalIntentionText = document.getElementById('generalIntentionText');
+
+  // Poster Lightbox Elements
+  const posterModal = document.getElementById('posterModal');
+  const openPosterBtn = document.getElementById('openPosterBtn');
+  const posterPreviewBtn = document.getElementById('posterPreviewBtn');
+  const closePosterModalBtn = document.getElementById('closePosterModalBtn');
 
   // Quote Modal Elements
   const quoteModal = document.getElementById('quoteModal');
@@ -71,6 +90,39 @@ document.addEventListener('DOMContentLoaded', () => {
   if (isAdmin) {
     if (adminHeaderBadge) adminHeaderBadge.style.display = 'inline-block';
     if (adminActionButtons) adminActionButtons.style.display = 'flex';
+  }
+
+  // Render Quick 8-Day Selector
+  function renderDaysStrip() {
+    if (!cercoDaysBar) return;
+    cercoDaysBar.innerHTML = CERCO_DAYS.map(d => `
+      <button type="button" class="sjb-day-chip ${d.date === currentDate ? 'active' : ''}" data-date="${d.date}">
+        ${d.label}
+      </button>
+    `).join('');
+
+    cercoDaysBar.querySelectorAll('.sjb-day-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        currentDate = chip.dataset.date;
+        dateInput.value = currentDate;
+        selectedTimeSlot = null;
+        renderDaysStrip();
+        loadSchedule(currentDate);
+      });
+    });
+  }
+
+  // Poster Modal Handlers
+  [openPosterBtn, posterPreviewBtn].forEach(el => {
+    if (el && posterModal) {
+      el.addEventListener('click', () => posterModal.classList.add('active'));
+    }
+  });
+  if (closePosterModalBtn && posterModal) {
+    closePosterModalBtn.addEventListener('click', () => posterModal.classList.remove('active'));
+    posterModal.addEventListener('click', (e) => {
+      if (e.target === posterModal) posterModal.classList.remove('active');
+    });
   }
 
   // Mobile Tab Switching
@@ -105,11 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
   dateInput.addEventListener('change', (e) => {
     currentDate = e.target.value;
     selectedTimeSlot = null;
+    renderDaysStrip();
     loadSchedule(currentDate);
   });
 
   async function loadSchedule(dateStr) {
-    slotsList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 36px; color: var(--text-muted);">Carregando horários...</div>';
+    slotsList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 36px; color: var(--text-muted);">Carregando escala 24 horas...</div>';
 
     try {
       const response = await fetch(`api.php?date=${dateStr}&type=${SCHEDULE_TYPE}`);
@@ -123,26 +176,26 @@ document.addEventListener('DOMContentLoaded', () => {
       scheduleData = getLocalStorageData(dateStr);
     }
 
-    // Auto-select first empty slot on initial load for convenience
+    // Auto-select first empty slot on load
     if (!selectedTimeSlot && scheduleData && Array.isArray(scheduleData.slots)) {
-      const firstEmpty = scheduleData.slots.find(s => !isClosingSlot(s) && (!s.adorers || s.adorers.length === 0));
-      const firstNonClosing = scheduleData.slots.find(s => !isClosingSlot(s));
+      const firstEmpty = scheduleData.slots.find(s => !s.adorers || s.adorers.length === 0);
       if (firstEmpty) selectedTimeSlot = firstEmpty.time;
-      else if (firstNonClosing) selectedTimeSlot = firstNonClosing.time;
+      else if (scheduleData.slots[0]) selectedTimeSlot = scheduleData.slots[0].time;
     }
 
     renderUI();
   }
 
-  function isClosingSlot(slot) {
-    return slot.time === '19:00' || (slot.notes && slot.notes.toLowerCase().includes('encerramento'));
+  function isDawnSlot(timeStr) {
+    const hour = parseInt((timeStr || '').split(':')[0], 10);
+    return !isNaN(hour) && hour < 6;
   }
 
   function renderUI() {
     if (!scheduleData || !scheduleData.slots) return;
 
     if (scheduleData.quote_text && quoteTextEl) {
-      quoteTextEl.textContent = scheduleData.quote_text;
+      quoteTextEl.innerHTML = escapeHtml(scheduleData.quote_text).replace(/\s*—\s*/g, '<br>');
     }
     if (scheduleData.quote_author && quoteAuthorEl) {
       quoteAuthorEl.textContent = scheduleData.quote_author.startsWith('—')
@@ -160,52 +213,43 @@ document.addEventListener('DOMContentLoaded', () => {
     slotsList.innerHTML = '';
 
     let filledCount = 0;
-    let totalSlots = 0;
+    const totalSlots = scheduleData.slots.length;
     let emptySlots = [];
 
     scheduleData.slots.forEach(slot => {
-      const closing = isClosingSlot(slot);
       const adorers = slot.adorers || [];
       const hasAdorers = adorers.length > 0;
+      const dawn = isDawnSlot(slot.time);
 
-      if (!closing) {
-        totalSlots++;
-        if (hasAdorers) filledCount++;
-        else emptySlots.push(slot.time);
-      }
+      if (hasAdorers) filledCount++;
+      else emptySlots.push(slot.time);
 
       // Apply active filter
-      if (activeFilter === 'empty' && (closing || hasAdorers)) return;
-      if (activeFilter === 'filled' && (closing || !hasAdorers)) return;
+      if (activeFilter === 'empty' && hasAdorers) return;
+      if (activeFilter === 'filled' && !hasAdorers) return;
+      if (activeFilter === 'dawn' && !dawn) return;
 
       const tile = document.createElement('button');
       tile.type = 'button';
       tile.className = 'sjb-slot-tile';
-
-      if (closing) tile.classList.add('is-closing');
-      else if (hasAdorers) tile.classList.add('is-filled');
-      else tile.classList.add('is-empty');
+      if (dawn) tile.classList.add('is-dawn');
+      tile.classList.add(hasAdorers ? 'is-filled' : 'is-empty');
 
       if (selectedTimeSlot === slot.time) {
         tile.classList.add('is-selected');
       }
 
-      let badgeHtml = '';
-      if (closing) {
-        badgeHtml = `<span class="sjb-status-badge badge-closing">Missa</span>`;
-      } else if (adorers.length === 0) {
-        badgeHtml = `<span class="sjb-status-badge badge-empty">Vago</span>`;
-      } else {
-        badgeHtml = `<span class="sjb-status-badge badge-filled">${adorers.length} adorador${adorers.length > 1 ? 'es' : ''}</span>`;
-      }
+      const badgeHtml = adorers.length === 0
+        ? `<span class="sjb-status-badge badge-empty">Vago</span>`
+        : `<span class="sjb-status-badge badge-filled">${adorers.length} adorador${adorers.length > 1 ? 'es' : ''}</span>`;
 
       const previewText = hasAdorers
         ? adorers.map(a => a.name).join(', ')
-        : (closing ? 'Encerramento da Adoração' : 'Toque para inscrever-se');
+        : (dawn ? '🌙 Madrugada · Vago' : 'Toque para inscrever');
 
       tile.innerHTML = `
         <div class="sjb-tile-top">
-          <span class="sjb-tile-time">${slot.time}</span>
+          <span class="sjb-tile-time">${dawn ? '🌙 ' : ''}${slot.time}</span>
           ${badgeHtml}
         </div>
         <div class="sjb-tile-preview ${hasAdorers ? 'has-names' : ''}">${escapeHtml(previewText)}</div>
@@ -217,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderGrid();
         renderDetailDrawer();
 
-        // On mobile, scroll smoothly to the booking drawer
         if (window.innerWidth <= 960) {
           document.getElementById('slotDetailPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -238,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update Alert Banner
     if (emptySlots.length > 0) {
       alertBanner.style.display = 'block';
-      alertBanner.innerHTML = `<strong>⚠️ Horários sem adorador:</strong> ${emptySlots.join(' · ')}`;
+      alertBanner.innerHTML = `<strong>⚠️ Horários vagos (${emptySlots.length}):</strong> ${emptySlots.join(' · ')}`;
     } else {
       alertBanner.style.display = 'none';
     }
@@ -254,27 +297,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const slot = scheduleData.slots.find(s => s.time === selectedTimeSlot);
     if (!slot) return;
 
-    const closing = isClosingSlot(slot);
     const adorers = slot.adorers || [];
+    const dawn = isDawnSlot(slot.time);
 
     detailEmptyState.style.display = 'none';
     detailActiveState.style.display = 'block';
-    detailSlotTime.textContent = `${slot.time}h`;
+    if (detailDateLabel) detailDateLabel.textContent = formatDateBR(currentDate);
+    detailSlotTime.textContent = `${dawn ? '🌙 ' : ''}${slot.time}h`;
 
-    if (closing) {
-      detailSlotBadge.textContent = 'Missa / Encerramento';
-      detailSlotBadge.className = 'sjb-status-badge badge-closing';
-      bookingForm.style.display = 'none';
-    } else if (adorers.length === 0) {
+    if (adorers.length === 0) {
       detailSlotBadge.textContent = 'Horário Vago';
       detailSlotBadge.className = 'sjb-status-badge badge-empty';
-      bookingForm.style.display = 'flex';
     } else {
       detailSlotBadge.textContent = `${adorers.length} Adorador${adorers.length > 1 ? 'es' : ''}`;
       detailSlotBadge.className = 'sjb-status-badge badge-filled';
-      bookingForm.style.display = 'flex';
     }
 
+    bookingForm.style.display = 'flex';
     bookingSubmitBtn.textContent = `✅ Confirmar Adoração às ${slot.time}`;
 
     if (adorers.length > 0) {
@@ -330,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="sjb-intention-item">
         <div class="sjb-intention-meta">
           <span>🙏 ${escapeHtml(item.name)}</span>
-          ${item.time ? `<span class="sjb-intention-time">${item.time}h</span>` : '<span class="sjb-intention-time">Comunidade</span>'}
+          ${item.time ? `<span class="sjb-intention-time">${item.time}h</span>` : '<span class="sjb-intention-time">Cerco de Jericó</span>'}
         </div>
         <div class="sjb-intention-body">“${escapeHtml(item.text)}”</div>
       </div>
@@ -343,8 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     printTableBody.innerHTML = '';
 
     scheduleData.slots.forEach(slot => {
-      const closing = isClosingSlot(slot);
-      const names = (slot.adorers || []).map(a => a.name).join(' / ') || (closing ? 'Encerramento' : '-');
+      const names = (slot.adorers || []).map(a => a.name).join(' / ') || '-';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="font-weight: bold;">${slot.time}</td>
@@ -490,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (scheduleData) {
           scheduleData.quote_text = text;
           scheduleData.quote_author = author;
-          localStorage.setItem(`adoracao_sjb_${currentDate}`, JSON.stringify(scheduleData));
+          localStorage.setItem(`cerco_sjb_${currentDate}`, JSON.stringify(scheduleData));
         }
       }
 
@@ -508,23 +546,26 @@ document.addEventListener('DOMContentLoaded', () => {
       let filledSummary = [];
 
       scheduleData.slots.forEach(slot => {
-        if (isClosingSlot(slot)) return;
         const adorers = (slot.adorers || []).map(a => a.name).join(', ');
         if (!adorers) emptyHours.push(slot.time);
         else filledSummary.push(`• *${slot.time}*: ${adorers}`);
       });
 
-      let msg = `✝️ *QUINTA-FEIRA DE ADORAÇÃO - SÃO JOSÉ DO BARREIRO* ✝️\n\n`;
+      let msg = `🎺 *CERCO DE JERICÓ — ADORAÇÃO 24 HORAS* ✝️\n`;
+      msg += `⛪ *Paróquia São José — São José do Barreiro (SP)*\n`;
       msg += `📅 *Data:* ${formatDateBR(currentDate)}\n\n`;
 
       if (emptyHours.length > 0) {
         msg += `⚠️ *HORÁRIOS QUE PRECISAM DE ADORADOR:*\n`;
         msg += emptyHours.map(h => ` 🕒 ${h} - (VAGO)`).join('\n') + `\n\n`;
       } else {
-        msg += `*Todos os horários estão preenchidos. Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
+        msg += `*Todas as 24 horas estão preenchidas! Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
       }
 
-      msg += `📋 *Escala Atual:*\n` + filledSummary.join('\n') + `\n\n`;
+      if (filledSummary.length > 0) {
+        msg += `📋 *Escala Atual:*\n` + filledSummary.join('\n') + `\n\n`;
+      }
+      msg += `_“Eu e minha casa serviremos ao Senhor.” (Js 24,15)_`;
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
     });
   }
@@ -532,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Admin: Reset Day
   if (resetBtn) {
     resetBtn.addEventListener('click', async () => {
-      if (!confirm('Tem certeza que deseja restaurar os horários padrão desta Quinta-feira?')) return;
+      if (!confirm('Tem certeza que deseja restaurar a escala de 24 horas deste dia?')) return;
       try {
         const response = await fetch('api.php', {
           method: 'POST',
@@ -546,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('Fallback');
         }
       } catch (err) {
-        localStorage.removeItem(`adoracao_sjb_${currentDate}`);
+        localStorage.removeItem(`cerco_sjb_${currentDate}`);
         scheduleData = getLocalStorageData(currentDate);
       }
       renderUI();
@@ -554,14 +595,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Helpers
-  function getNextThursdayDateStr() {
+  function getInitialCercoDate() {
     const today = new Date();
-    const distanceToThu = (4 - today.getDay() + 7) % 7;
-    const targetThu = new Date(today.getFullYear(), today.getMonth(), today.getDate() + distanceToThu);
-    const y = targetThu.getFullYear();
-    const m = String(targetThu.getMonth() + 1).padStart(2, '0');
-    const d = String(targetThu.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const d = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${y}-${m}-${d}`;
+    if (todayStr >= '2026-11-15' && todayStr <= '2026-11-22') {
+      return todayStr;
+    }
+    return '2026-11-16';
   }
 
   function formatDateBR(dateStr) {
@@ -581,31 +624,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // LocalStorage Fallbacks
   function getLocalStorageData(dateStr) {
-    const key = `adoracao_sjb_${dateStr}`;
+    const key = `cerco_sjb_${dateStr}`;
     const saved = localStorage.getItem(key);
     if (saved) return JSON.parse(saved);
+
+    const slots = [];
+    for (let h = 0; h < 24; h++) {
+      const time = `${String(h).padStart(2, '0')}:00`;
+      slots.push({ time, adorers: [], notes: h < 6 ? 'Madrugada' : '' });
+    }
+
     return {
       date: dateStr,
-      quote_text: 'No silêncio da oficina e diante do Santíssimo Sacramento, São José nos ensina a guardar Jesus no coração.',
-      quote_author: 'Paróquia São José · São José do Barreiro',
+      quote_text: '“Eu e minha casa serviremos ao Senhor.” (Js 24,15) — “Buscai o Senhor enquanto Ele se deixa encontrar.” (Is 55,6)',
+      quote_author: 'Cerco de Jericó · 15 a 22 de Novembro · Paróquia São José',
       general_intentions: [],
-      slots: [
-        { time: '05:00', adorers: [{ name: 'Rosário' }] },
-        { time: '06:00', adorers: [{ name: 'Rosário' }] },
-        { time: '07:00', adorers: [] },
-        { time: '08:00', adorers: [] },
-        { time: '09:00', adorers: [] },
-        { time: '10:00', adorers: [] },
-        { time: '11:00', adorers: [] },
-        { time: '12:00', adorers: [] },
-        { time: '13:00', adorers: [] },
-        { time: '14:00', adorers: [] },
-        { time: '15:00', adorers: [] },
-        { time: '16:00', adorers: [] },
-        { time: '17:00', adorers: [] },
-        { time: '18:00', adorers: [] },
-        { time: '19:00', adorers: [{ name: 'Encerramento' }], notes: 'Missa / Encerramento' }
-      ]
+      slots
     };
   }
 
@@ -615,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (slot) {
       if (!slot.adorers) slot.adorers = [];
       slot.adorers.push({ name, intention });
-      localStorage.setItem(`adoracao_sjb_${dateStr}`, JSON.stringify(data));
+      localStorage.setItem(`cerco_sjb_${dateStr}`, JSON.stringify(data));
       scheduleData = data;
     }
   }
@@ -625,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const slot = data.slots.find(s => s.time === time);
     if (slot && slot.adorers) {
       slot.adorers.splice(index, 1);
-      localStorage.setItem(`adoracao_sjb_${dateStr}`, JSON.stringify(data));
+      localStorage.setItem(`cerco_sjb_${dateStr}`, JSON.stringify(data));
       scheduleData = data;
     }
   }
@@ -634,10 +668,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = getLocalStorageData(dateStr);
     if (!data.general_intentions) data.general_intentions = [];
     data.general_intentions.push({ name: name || 'Anônimo', intention });
-    localStorage.setItem(`adoracao_sjb_${dateStr}`, JSON.stringify(data));
+    localStorage.setItem(`cerco_sjb_${dateStr}`, JSON.stringify(data));
     scheduleData = data;
   }
 
   // Initial Load
+  renderDaysStrip();
   loadSchedule(currentDate);
 });

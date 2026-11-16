@@ -29,9 +29,22 @@ function getVigiliaSlots() {
   ];
 }
 
+function getCercoJericoSlots() {
+  const slots = [];
+  for (let h = 0; h < 24; h++) {
+    const time = `${String(h).padStart(2, '0')}:00`;
+    const notes = h < 6 ? "Madrugada" : "";
+    slots.push({ time, adorers: [], notes });
+  }
+  return slots;
+}
+
 function getDefaultSlots(type = 'adoracao') {
   if (type === 'vigilia') {
     return getVigiliaSlots();
+  }
+  if (type === 'sjb') {
+    return getCercoJericoSlots();
   }
   return [
     { time: "05:00", adorers: [{ name: "Rosário" }], notes: "" },
@@ -74,7 +87,7 @@ export async function onRequest(context) {
   async function getData(dateStr, type = 'adoracao') {
     const isVigilia = type === 'vigilia';
     const isSjb = type === 'sjb';
-    const key = isVigilia ? `vigilia_cristo_rei_${dateStr}` : (isSjb ? `adoracao_sjb_${dateStr}` : `adoracao_${dateStr}`);
+    const key = isVigilia ? `vigilia_cristo_rei_${dateStr}` : (isSjb ? `cerco_sjb_${dateStr}` : `adoracao_${dateStr}`);
     let data = null;
 
     if (kv) {
@@ -91,17 +104,17 @@ export async function onRequest(context) {
     const defaultQuoteText = isVigilia
       ? "O Senhor é Rei, revestiu-se de majestade. Vinde, adoremos a Cristo, Rei do Universo, no Santíssimo Sacramento!"
       : (isSjb
-        ? "No silêncio da oficina e diante do Santíssimo Sacramento, São José nos ensina a guardar Jesus no coração."
+        ? "“Eu e minha casa serviremos ao Senhor.” (Js 24,15) — “Buscai o Senhor enquanto Ele se deixa encontrar.” (Is 55,6)"
         : "Se desejas progredir na vida espiritual, aproxima-te frequentemente da Eucaristia.");
     const defaultQuoteAuthor = isVigilia
       ? "Nosso Senhor Jesus Cristo, Rei do Universo · Encerramento do Ano Litúrgico"
-      : (isSjb ? "Paróquia São José · São José do Barreiro" : "São Boaventura");
+      : (isSjb ? "Cerco de Jericó · 15 a 22 de Novembro · Paróquia São José" : "São Boaventura");
 
     if (!data) {
       data = {
         date: dateStr,
-        title: isVigilia ? "Vigília de Cristo Rei — 24 Horas" : "Quinta-feira de Adoração",
-        community: isSjb ? "São José do Barreiro" : "Comunidade do Formoso",
+        title: isVigilia ? "Vigília de Cristo Rei — 24 Horas" : (isSjb ? "Cerco de Jericó — Adoração 24 Horas" : "Quinta-feira de Adoração"),
+        community: isSjb ? "Paróquia São José — São José do Barreiro" : "Comunidade do Formoso",
         quote_text: defaultQuoteText,
         quote_author: defaultQuoteAuthor,
         slots: getDefaultSlots(type),
@@ -119,7 +132,7 @@ export async function onRequest(context) {
   }
 
   async function saveData(dateStr, data, type = 'adoracao') {
-    const key = type === 'vigilia' ? `vigilia_cristo_rei_${dateStr}` : (type === 'sjb' ? `adoracao_sjb_${dateStr}` : `adoracao_${dateStr}`);
+    const key = type === 'vigilia' ? `vigilia_cristo_rei_${dateStr}` : (type === 'sjb' ? `cerco_sjb_${dateStr}` : `adoracao_${dateStr}`);
     data.last_updated = new Date().toISOString();
     const jsonStr = JSON.stringify(data);
 
