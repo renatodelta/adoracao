@@ -1,4 +1,4 @@
-// JS App for Cerco de Jericó — Adoração 24 Horas · Paróquia São José (São José do Barreiro)
+// JS App for Cerco de Jericó — Paróquia São José (São José do Barreiro)
 
 document.addEventListener('DOMContentLoaded', () => {
   const SCHEDULE_TYPE = 'sjb';
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   async function loadSchedule(dateStr) {
-    slotsList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 36px; color: var(--text-muted);">Carregando escala 24 horas...</div>';
+    slotsList.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 36px; color: var(--text-muted);">Carregando horários...</div>';
 
     try {
       const response = await fetch(`api.php?date=${dateStr}&type=${SCHEDULE_TYPE}`);
@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else filledSummary.push(`• *${slot.time}*: ${adorers}`);
       });
 
-      let msg = `🎺 *CERCO DE JERICÓ — ADORAÇÃO 24 HORAS* ✝️\n`;
+      let msg = `🎺 *CERCO DE JERICÓ — ADORAÇÃO DIA E NOITE* ✝️\n`;
       msg += `⛪ *Paróquia São José — São José do Barreiro (SP)*\n`;
       msg += `📅 *Data:* ${formatDateBR(currentDate)}\n\n`;
 
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
         msg += `⚠️ *HORÁRIOS QUE PRECISAM DE ADORADOR:*\n`;
         msg += emptyHours.map(h => ` 🕒 ${h} - (VAGO)`).join('\n') + `\n\n`;
       } else {
-        msg += `*Todas as 24 horas estão preenchidas! Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
+        msg += `*Todos os horários estão preenchidos! Louvado seja Nosso Senhor Jesus Cristo!*\n\n`;
       }
 
       if (filledSummary.length > 0) {
@@ -573,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Admin: Reset Day
   if (resetBtn) {
     resetBtn.addEventListener('click', async () => {
-      if (!confirm('Tem certeza que deseja restaurar a escala de 24 horas deste dia?')) return;
+      if (!confirm('Tem certeza que deseja restaurar a escala deste dia?')) return;
       try {
         const response = await fetch('api.php', {
           method: 'POST',

@@ -113,7 +113,7 @@ export async function onRequest(context) {
     if (!data) {
       data = {
         date: dateStr,
-        title: isVigilia ? "Vigília de Cristo Rei — 24 Horas" : (isSjb ? "Cerco de Jericó — Adoração 24 Horas" : "Quinta-feira de Adoração"),
+        title: isVigilia ? "Vigília de Cristo Rei — 24 Horas" : (isSjb ? "Cerco de Jericó — Adoração Dia e Noite" : "Quinta-feira de Adoração"),
         community: isSjb ? "Paróquia São José — São José do Barreiro" : "Comunidade do Formoso",
         quote_text: defaultQuoteText,
         quote_author: defaultQuoteAuthor,

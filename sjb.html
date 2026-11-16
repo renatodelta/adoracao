@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Cerco de Jericó — Adoração 24 Horas · Paróquia São José (São José do Barreiro)</title>
+  <title>Cerco de Jericó · Paróquia São José (São José do Barreiro)</title>
   <meta name="description"
-    content="Cerco de Jericó — Adoração 24 Horas ao Santíssimo Sacramento (15 a 22 de Novembro) — Paróquia São José, São José do Barreiro - SP">
+    content="Cerco de Jericó — Adoração ao Santíssimo Sacramento (15 a 22 de Novembro) — Paróquia São José, São José do Barreiro - SP">
   <meta name="theme-color" content="#0b224a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -32,7 +32,7 @@
         </div>
         <div class="sjb-brand-text">
           <div class="sjb-eyebrow">⛪ Paróquia São José · São José do Barreiro — SP</div>
-          <h1 class="sjb-title">Cerco de Jericó <span class="sjb-title-badge">24 HORAS</span></h1>
+          <h1 class="sjb-title">Cerco de Jericó</h1>
           <p class="sjb-location">📅 15 a 22 de Novembro · O Santíssimo Sacramento ficará exposto <strong>Dia e Noite</strong></p>
         </div>
       </div>
@@ -45,9 +45,9 @@
           <input type="date" id="adoracaoDate" aria-label="Data da Adoração">
         </div>
 
-        <div class="sjb-coverage-pill" title="Cobertura das 24 horas">
+        <div class="sjb-coverage-pill" title="Cobertura dos horários">
           <div class="sjb-coverage-top">
-            <span class="sjb-coverage-label">Cobertura 24h</span>
+            <span class="sjb-coverage-label">Cobertura</span>
             <strong id="statsCount">0/24</strong>
           </div>
           <div class="sjb-progress-track">
@@ -61,7 +61,7 @@
     <div class="sjb-admin-bar" id="adminActionButtons" style="display: none;">
       <button id="shareWpBtn" class="sjb-btn sjb-btn-whatsapp">📱 Enviar Escala no WhatsApp</button>
       <button id="editQuoteBtn" class="sjb-btn sjb-btn-outline-light">✏️ Editar Frase</button>
-      <button id="resetBtn" class="sjb-btn sjb-btn-danger-outline">🔄 Restaurar 24h</button>
+      <button id="resetBtn" class="sjb-btn sjb-btn-danger-outline">🔄 Restaurar Horários</button>
     </div>
   </header>
 
@@ -74,7 +74,7 @@
 
   <!-- Mobile Tab Switcher -->
   <nav class="sjb-mobile-tabs" aria-label="Navegação">
-    <button type="button" class="sjb-tab-btn active" data-tab="schedule">🕒 Escala 24h</button>
+    <button type="button" class="sjb-tab-btn active" data-tab="schedule">🕒 Horários</button>
     <button type="button" class="sjb-tab-btn" data-tab="intentions">🙏 Livro de Intenções <span class="sjb-tab-count" id="intentionsCountBadge">0</span></button>
   </nav>
 
@@ -133,7 +133,7 @@
       <!-- Filter Bar -->
       <div class="sjb-filter-bar">
         <div class="sjb-filter-group" role="tablist" aria-label="Filtrar horários">
-          <button type="button" class="sjb-filter-pill active" data-filter="all">Todos (24h)</button>
+          <button type="button" class="sjb-filter-pill active" data-filter="all">Todos</button>
           <button type="button" class="sjb-filter-pill" data-filter="empty">Precisa de Adorador</button>
           <button type="button" class="sjb-filter-pill" data-filter="dawn">🌙 Madrugada (00h–05h)</button>
           <button type="button" class="sjb-filter-pill" data-filter="filled">Preenchidos</button>
@@ -151,7 +151,7 @@
         <div class="sjb-detail-empty" id="detailEmptyState">
           <span class="sjb-detail-icon">🕯️</span>
           <h3>Escolha um horário acima</h3>
-          <p>Clique em qualquer horário da grade de 24 horas para ver quem já está adorando ou confirmar a sua hora diante do Santíssimo.</p>
+          <p>Clique em qualquer horário da grade para ver quem já está adorando ou confirmar a sua hora diante do Santíssimo.</p>
         </div>
 
         <div class="sjb-detail-active" id="detailActiveState" style="display: none;">
@@ -196,7 +196,7 @@
   </main>
 
   <footer class="sjb-footer">
-    <p><strong>Cerco de Jericó — Adoração 24 Horas</strong> · Paróquia São José (São José do Barreiro - SP)</p>
+    <p><strong>Cerco de Jericó — Adoração Dia e Noite</strong> · Paróquia São José (São José do Barreiro - SP)</p>
     <p class="sjb-footer-sub">“Eu e minha casa serviremos ao Senhor.” (Js 24,15)</p>
   </footer>
 
@@ -244,7 +244,7 @@
     <div style="text-align: center; border-bottom: 2px solid #0b224a; padding-bottom: 12px; margin-bottom: 15px;">
       <img src="assets/custodia.jpg" alt="Logo" class="sheet-header-img">
       <h2 style="font-family: 'Cinzel', serif; font-size: 22px; color: #0b224a; margin-top: 6px; text-transform: uppercase;">
-        Cerco de Jericó — Adoração 24 Horas</h2>
+        Cerco de Jericó — Adoração ao Santíssimo</h2>
       <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: #13356e;">
         Paróquia São José — São José do Barreiro (SP) · 15 a 22 de Novembro</p>
       <p style="font-weight: bold; margin-top: 6px; font-size: 14px;">Data: <span id="printDateLabel"></span></p>
